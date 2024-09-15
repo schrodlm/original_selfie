@@ -11,6 +11,7 @@ selfie.cs.uni-salzburg.at
 
 Rotor is a tool for bit-precise reasoning about RISC-V machines
 and RISC-V code using BTOR2 and SMT-LIB as modeling format.
+Rotor utilizes the compiler and bootloader of the selfie system.
 
 Rotor generates models of 64-bit and 32-bit RISC-V machines
 supporting 64-bit and 32-bit integer arithmetic (RV64I, RV32I)
@@ -140,6 +141,9 @@ char* ARRAY  = (char*) 0;
 
 char* OP_SORT = (char*) 0;
 
+char* OP_ZERO = (char*) 0;
+char* OP_ONE  = (char*) 0;
+
 char* OP_CONST  = (char*) 0;
 char* OP_CONSTD = (char*) 0;
 char* OP_CONSTH = (char*) 0;
@@ -217,6 +221,9 @@ void init_model() {
   ARRAY  = "array";
 
   OP_SORT = "sort";
+
+  OP_ZERO = "zero";
+  OP_ONE  = "one";
 
   OP_CONST  = "const";
   OP_CONSTD = "constd";
@@ -484,7 +491,7 @@ uint64_t* eval_good_nid = (uint64_t*) 0;
 // -----------------------------------------------------------------
 // *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~
 
-void print_interface_sorts();
+void print_machine_interface();
 
 // ------------------------ GLOBAL CONSTANTS -----------------------
 
@@ -559,7 +566,7 @@ uint64_t* SID_DOUBLE_MACHINE_WORD = (uint64_t*) 0;
 
 // ------------------------- INITIALIZATION ------------------------
 
-void init_interface_sorts() {
+void init_machine_interface() {
   SID_BOOLEAN = new_bitvec(1, "Boolean");
 
   NID_FALSE = new_constant(OP_CONSTD, SID_BOOLEAN, 0, "false");
@@ -648,7 +655,7 @@ void init_interface_sorts() {
 // ---------------------------- KERNEL -----------------------------
 // -----------------------------------------------------------------
 
-void print_interface_kernel();
+void print_kernel_interface();
 
 uint64_t get_power_of_two_size_in_bytes(uint64_t size_in_bits);
 uint64_t calculate_address_space(uint64_t number_of_bytes, uint64_t word_size_in_bits);
@@ -717,7 +724,7 @@ uint64_t* eval_more_than_one_readable_byte_to_read_nid = (uint64_t*) 0;
 
 // ------------------------- INITIALIZATION ------------------------
 
-void init_interface_kernel() {
+void init_kernel_interface() {
   uint64_t saved_reuse_lines;
 
   NID_MAX_STRING_LENGTH = new_constant(OP_CONSTD, SID_MACHINE_WORD,
@@ -1177,6 +1184,8 @@ uint64_t* NID_BYTE_SIZE_IN_BASE_BITS = (uint64_t*) 0;
 
 // code segment
 
+uint64_t max_code_size = 0;
+
 uint64_t* init_zeroed_code_segment_nids = (uint64_t*) 0;
 uint64_t* next_zeroed_code_segment_nids = (uint64_t*) 0;
 
@@ -1194,6 +1203,8 @@ uint64_t* initial_head_nid = (uint64_t*) 0;
 uint64_t* initial_tail_nid = (uint64_t*) 0;
 
 // data segment
+
+uint64_t max_data_size = 0;
 
 uint64_t* init_zeroed_data_segment_nids = (uint64_t*) 0;
 uint64_t* next_zeroed_data_segment_nids = (uint64_t*) 0;
@@ -1255,7 +1266,7 @@ uint64_t* eval_core_0_stack_segment_data_flow_nid = (uint64_t*) 0;
 
 // ------------------------- INITIALIZATION ------------------------
 
-void init_memory_sorts(uint64_t max_code_size, uint64_t max_data_size) {
+void init_memory_sorts() {
   uint64_t saved_reuse_lines;
 
   if (VIRTUAL_ADDRESS_SPACE < WORDSIZEINBITS)
@@ -2193,6 +2204,7 @@ uint64_t* NID_C_SUB  = (uint64_t*) 0;
 uint64_t* NID_C_XOR  = (uint64_t*) 0;
 uint64_t* NID_C_OR   = (uint64_t*) 0;
 uint64_t* NID_C_AND  = (uint64_t*) 0;
+
 uint64_t* NID_C_ADDW = (uint64_t*) 0;
 uint64_t* NID_C_SUBW = (uint64_t*) 0;
 
@@ -2219,7 +2231,7 @@ uint64_t* NID_C_JALR = (uint64_t*) 0;
 
 // instruction IDs
 
-uint64_t ID_UNKOWN = 0;
+uint64_t ID_UNKNOWN = 0;
 
 uint64_t ID_ECALL = 1;
 
@@ -2315,69 +2327,69 @@ uint64_t ID_JAL = 63;
 
 // CR-type
 
-uint64_t ID_C_MV  = 64; // "c.mv";
-uint64_t ID_C_ADD = 65; // "c.add";
+uint64_t ID_C_MV  = 64;
+uint64_t ID_C_ADD = 65;
 
-uint64_t ID_C_JR   = 66; // "c.jr";
-uint64_t ID_C_JALR = 67; // "c.jalr";
+uint64_t ID_C_JR   = 66;
+uint64_t ID_C_JALR = 67;
 
 // CI-type
 
-uint64_t ID_C_LI  = 68; // "c.li";
-uint64_t ID_C_LUI = 69; // "c.lui";
+uint64_t ID_C_LI  = 68;
+uint64_t ID_C_LUI = 69;
 
-uint64_t ID_C_ADDI     = 70; // "c.addi";
-uint64_t ID_C_ADDIW    = 71; // "c.addiw";
-uint64_t ID_C_ADDI16SP = 72; // "c.addi16sp";
+uint64_t ID_C_ADDI     = 70;
+uint64_t ID_C_ADDIW    = 71;
+uint64_t ID_C_ADDI16SP = 72;
 
 // CIW-type
 
-uint64_t ID_C_ADDI4SPN = 73; // "c.addi4spn";
+uint64_t ID_C_ADDI4SPN = 73;
 
 // CI-type
 
-uint64_t ID_C_SLLI = 74; // "c.slli";
+uint64_t ID_C_SLLI = 74;
 
-uint64_t ID_C_LWSP = 75; // "c.lwsp";
-uint64_t ID_C_LDSP = 76; // "c.ldsp";
+uint64_t ID_C_LWSP = 75;
+uint64_t ID_C_LDSP = 76;
 
 // CL-type
 
-uint64_t ID_C_LW = 77; // "c.lw";
-uint64_t ID_C_LD = 78; // "c.ld";
+uint64_t ID_C_LW = 77;
+uint64_t ID_C_LD = 78;
 
 // CS-type
 
-uint64_t ID_C_SW = 79; // "c.sw";
-uint64_t ID_C_SD = 80; // "c.sd";
+uint64_t ID_C_SW = 79;
+uint64_t ID_C_SD = 80;
 
-uint64_t ID_C_SUB = 81; // "c.sub";
-uint64_t ID_C_XOR = 82; // "c.xor";
-uint64_t ID_C_OR  = 83; // "c.or";
-uint64_t ID_C_AND = 84; // "c.and";
+uint64_t ID_C_SUB = 81;
+uint64_t ID_C_XOR = 82;
+uint64_t ID_C_OR  = 83;
+uint64_t ID_C_AND = 84;
 
-uint64_t ID_C_ADDW = 85; // "c.addw";
-uint64_t ID_C_SUBW = 86; // "c.subw";
+uint64_t ID_C_ADDW = 85;
+uint64_t ID_C_SUBW = 86;
 
 // CSS-type
 
-uint64_t ID_C_SWSP = 87; // "c.swsp";
-uint64_t ID_C_SDSP = 88; // "c.sdsp";
+uint64_t ID_C_SWSP = 87;
+uint64_t ID_C_SDSP = 88;
 
 // CB-type
 
-uint64_t ID_C_BEQZ = 89; // "c.beqz";
-uint64_t ID_C_BNEZ = 90; // "c.bnez";
+uint64_t ID_C_BEQZ = 89;
+uint64_t ID_C_BNEZ = 90;
 
-uint64_t ID_C_ANDI = 91; // "c.andi";
+uint64_t ID_C_ANDI = 91;
 
-uint64_t ID_C_SRLI = 92; // "c.srli";
-uint64_t ID_C_SRAI = 93; // "c.srai";
+uint64_t ID_C_SRLI = 92;
+uint64_t ID_C_SRAI = 93;
 
 // CJ-type
 
-uint64_t ID_C_J   = 94; // "c.j";
-uint64_t ID_C_JAL = 95; // "c.jal";
+uint64_t ID_C_J   = 94;
+uint64_t ID_C_JAL = 95;
 
 // pseudoinstruction IDs
 
@@ -2437,7 +2449,7 @@ uint64_t* eval_ID_nids                        = (uint64_t*) 0;
 void init_instruction_mnemonics() {
   RISC_V_MNEMONICS = smalloc((ID_P_JALR + 1) * sizeof(char*));
 
-  *(RISC_V_MNEMONICS + ID_UNKOWN) = (uint64_t) "unknown RISC-V instruction";
+  *(RISC_V_MNEMONICS + ID_UNKNOWN) = (uint64_t) "unknown RISC-V instruction";
 
   *(RISC_V_MNEMONICS + ID_ECALL) = (uint64_t) "ecall";
 
@@ -2727,7 +2739,7 @@ void init_instruction_sorts() {
 
   SID_INSTRUCTION_ID = new_bitvec(7, "7-bit instruction ID");
 
-  NID_DISABLED = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_UNKOWN, get_instruction_mnemonic(ID_UNKOWN));
+  NID_DISABLED = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_UNKNOWN, get_instruction_mnemonic(ID_UNKNOWN));
 
   NID_LUI  = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_LUI, get_instruction_mnemonic(ID_LUI));
   NID_ADDI = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_ADDI, get_instruction_mnemonic(ID_ADDI));
@@ -2741,7 +2753,6 @@ void init_instruction_sorts() {
 
   NID_LW = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_LW, get_instruction_mnemonic(ID_LW));
   NID_SW = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_SW, get_instruction_mnemonic(ID_SW));
-
   NID_LD = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_LD, get_instruction_mnemonic(ID_LD));
   NID_SD = new_constant(OP_CONSTD, SID_INSTRUCTION_ID, ID_SD, get_instruction_mnemonic(ID_SD));
 
@@ -3338,6 +3349,7 @@ void print_model();
 int    rotor_argc = 0;
 char** rotor_argv = (char**) 0; // original rotor console invocation
 
+char* custom_model_name_option = (char*) 0;
 char* evaluate_model_option    = (char*) 0;
 char* debug_model_option       = (char*) 0;
 char* disassemble_model_option = (char*) 0;
@@ -3380,6 +3392,7 @@ uint64_t target_exit_code = 0; // model for given exit code
 
 uint64_t number_of_binaries = 0; // number of loaded binaries
 
+uint64_t custom_model_name = 0;
 uint64_t evaluate_model    = 0;
 uint64_t output_assembly   = 0;
 uint64_t disassemble_model = 0;
@@ -3463,6 +3476,7 @@ void init_rotor(int argc, char** argv) {
     argv = argv + 1;
   }
 
+  custom_model_name_option = "-o";
   evaluate_model_option    = "-m";
   debug_model_option       = "-d";
   disassemble_model_option = "-s";
@@ -3595,9 +3609,6 @@ uint64_t* code_starts = (uint64_t*) 0;
 uint64_t* code_sizes  = (uint64_t*) 0;
 uint64_t* data_starts = (uint64_t*) 0;
 uint64_t* data_sizes  = (uint64_t*) 0;
-
-uint64_t max_code_size = 0;
-uint64_t max_data_size = 0;
 
 uint64_t min_steps = -1;
 uint64_t max_steps = 0;
@@ -4009,9 +4020,9 @@ uint64_t print_constant(uint64_t nid, uint64_t* line) {
     print_nid(nid, line);
     if (get_op(line) == OP_CONSTD) {
       if (value == 0)
-        w = w + dprintf(output_fd, " zero %lu", get_nid(get_sid(line)));
+        w = w + dprintf(output_fd, " %s %lu", OP_ZERO, get_nid(get_sid(line)));
       else if (value == 1)
-        w = w + dprintf(output_fd, " one %lu", get_nid(get_sid(line)));
+        w = w + dprintf(output_fd, " %s %lu", OP_ONE, get_nid(get_sid(line)));
       else
         w = w + dprintf(output_fd, " %s %lu %ld", get_op(line), get_nid(get_sid(line)), value);
     } else if (get_op(line) == OP_CONST)
@@ -5931,7 +5942,7 @@ void reset_state_for(uint64_t core, uint64_t* lines) {
 // -----------------------------------------------------------------
 // *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~ *~*~
 
-void print_interface_sorts() {
+void print_machine_interface() {
   print_line(SID_BOOLEAN);
 
   print_line(SID_BYTE);
@@ -5987,7 +5998,7 @@ void print_interface_sorts() {
 // ---------------------------- KERNEL -----------------------------
 // -----------------------------------------------------------------
 
-void print_interface_kernel() {
+void print_kernel_interface() {
   print_break_comment("kernel interface");
 
   print_line(NID_EXIT_SYSCALL_ID);
@@ -11871,12 +11882,14 @@ void load_binary(uint64_t binary) {
 void model_rotor() {
   uint64_t core;
 
-  if (number_of_binaries > 0)
-    model_name = (char*) get_for(0, binary_names);
-  else if (IS64BITTARGET)
-    model_name = "64-bit-riscv-machine.m";
-  else
-    model_name = "32-bit-riscv-machine.m";
+  if (custom_model_name == 0) {
+    if (number_of_binaries > 0)
+      model_name = (char*) get_for(0, binary_names);
+    else if (IS64BITTARGET)
+      model_name = "64-bit-riscv-machine.m";
+    else
+      model_name = "32-bit-riscv-machine.m";
+  }
 
   number_of_lines = 0;
 
@@ -11891,11 +11904,11 @@ void model_rotor() {
 
   init_model();
 
-  init_interface_sorts();
-  init_interface_kernel();
+  init_machine_interface();
+  init_kernel_interface();
 
   init_register_file_sorts();
-  init_memory_sorts(max_code_size, max_data_size);
+  init_memory_sorts();
 
   init_kernels(number_of_cores);
   init_register_files(number_of_cores);
@@ -11983,25 +11996,27 @@ void open_model_file() {
 
   uint64_t i;
 
-  if (number_of_binaries == number_of_cores)
-    suffix = "-rotorized";
-  else
-    suffix = "-synthesize";
+  if (custom_model_name == 0) {
+    if (number_of_binaries == number_of_cores)
+      suffix = "-rotorized";
+    else
+      suffix = "-synthesize";
 
-  if (printing_unrolled_model) {
-    sprintf(string_buffer, "-kmin-%lu-kmax-%lu%s",
-      min_steps_to_bad_state - 1,
-      max_steps_to_bad_state - 1,
-      suffix);
-    suffix = string_copy(string_buffer);
+    if (printing_unrolled_model) {
+      sprintf(string_buffer, "-kmin-%lu-kmax-%lu%s",
+        min_steps_to_bad_state - 1,
+        max_steps_to_bad_state - 1,
+        suffix);
+      suffix = string_copy(string_buffer);
+    }
+
+    if (printing_smt)
+      extension = "smt";
+    else
+      extension = "btor2";
+
+    model_name = replace_extension(model_name, suffix, extension);
   }
-
-  if (printing_smt)
-    extension = "smt";
-  else
-    extension = "btor2";
-
-  model_name = replace_extension(model_name, suffix, extension);
 
   // assert: model_name is mapped and not longer than MAX_FILENAME_LENGTH
 
@@ -12250,8 +12265,8 @@ void print_model() {
 
   last_nid = 0;
 
-  print_interface_sorts();
-  print_interface_kernel();
+  print_machine_interface();
+  print_kernel_interface();
 
   print_register_sorts();
   print_memory_sorts();
@@ -13303,7 +13318,18 @@ void print_unrolled_model() {
 // -----------------------------------------------------------------
 
 uint64_t parse_engine_arguments() {
-  if (string_compare(peek_argument(1), evaluate_model_option)) {
+  if (string_compare(peek_argument(1), custom_model_name_option)) {
+    custom_model_name = 1;
+
+    get_argument();
+
+    if (number_of_remaining_arguments() > 1) {
+      model_name = peek_argument(1);
+
+      get_argument();
+    } else
+      return EXITCODE_BADARGUMENTS;
+  } else if (string_compare(peek_argument(1), evaluate_model_option)) {
     evaluate_model = 1;
 
     get_argument();
