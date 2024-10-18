@@ -57,68 +57,144 @@ import math
 
 # supported BTOR2 keywords and operators
 
-BITVEC = 'bitvec'
-ARRAY  = 'array'
+def init_btor2_keywords_operators():
+    global BITVEC
+    global ARRAY
 
-OP_SORT = 'sort'
+    global OP_SORT
 
-OP_ZERO = 'zero'
-OP_ONE  = 'one'
+    global OP_ZERO
+    global OP_ONE
 
-OP_CONST  = 'const'
-OP_CONSTD = 'constd'
-OP_CONSTH = 'consth'
-OP_INPUT  = 'input'
-OP_STATE  = 'state'
+    global OP_CONST
+    global OP_CONSTD
+    global OP_CONSTH
+    global OP_INPUT
+    global OP_STATE
 
-OP_INIT  = 'init'
-OP_NEXT  = 'next'
+    global OP_INIT
+    global OP_NEXT
 
-OP_SEXT  = 'sext'
-OP_UEXT  = 'uext'
-OP_SLICE = 'slice'
+    global OP_SEXT
+    global OP_UEXT
+    global OP_SLICE
 
-OP_NOT = 'not'
-OP_INC = 'inc'
-OP_DEC = 'dec'
-OP_NEG = 'neg'
+    global OP_NOT
+    global OP_INC
+    global OP_DEC
+    global OP_NEG
 
-OP_IMPLIES = 'implies'
-OP_EQ      = 'eq'
-OP_NEQ     = 'neq'
-OP_SGT     = 'sgt'
-OP_UGT     = 'ugt'
-OP_SGTE    = 'sgte'
-OP_UGTE    = 'ugte'
-OP_SLT     = 'slt'
-OP_ULT     = 'ult'
-OP_SLTE    = 'slte'
-OP_ULTE    = 'ulte'
+    global OP_IMPLIES
+    global OP_EQ
+    global OP_NEQ
+    global OP_SGT
+    global OP_UGT
+    global OP_SGTE
+    global OP_UGTE
+    global OP_SLT
+    global OP_ULT
+    global OP_SLTE
+    global OP_ULTE
 
-OP_AND = 'and'
-OP_OR  = 'or'
-OP_XOR = 'xor'
+    global OP_AND
+    global OP_OR
+    global OP_XOR
 
-OP_SLL = 'sll'
-OP_SRL = 'srl'
-OP_SRA = 'sra'
+    global OP_SLL
+    global OP_SRL
+    global OP_SRA
 
-OP_ADD  = 'add'
-OP_SUB  = 'sub'
-OP_MUL  = 'mul'
-OP_SDIV = 'sdiv'
-OP_UDIV = 'udiv'
-OP_SREM = 'srem'
-OP_UREM = 'urem'
+    global OP_ADD
+    global OP_SUB
+    global OP_MUL
+    global OP_SDIV
+    global OP_UDIV
+    global OP_SREM
+    global OP_UREM
 
-OP_CONCAT = 'concat'
-OP_READ   = 'read'
+    global OP_CONCAT
+    global OP_READ
 
-OP_ITE   = 'ite'
-OP_WRITE = 'write'
+    global OP_ITE
+    global OP_WRITE
 
-OP_BAD        = 'bad'
-OP_CONSTRAINT = 'constraint'
+    global OP_BAD
+    global OP_CONSTRAINT
+
+    BITVEC = 'bitvec'
+    ARRAY  = 'array'
+
+    OP_SORT = 'sort'
+
+    OP_ZERO = 'zero'
+    OP_ONE  = 'one'
+
+    OP_CONST  = 'const'
+    OP_CONSTD = 'constd'
+    OP_CONSTH = 'consth'
+    OP_INPUT  = 'input'
+    OP_STATE  = 'state'
+
+    OP_INIT  = 'init'
+    OP_NEXT  = 'next'
+
+    OP_SEXT  = 'sext'
+    OP_UEXT  = 'uext'
+    OP_SLICE = 'slice'
+
+    OP_NOT = 'not'
+    OP_INC = 'inc'
+    OP_DEC = 'dec'
+    OP_NEG = 'neg'
+
+    OP_IMPLIES = 'implies'
+    OP_EQ      = 'eq'
+    OP_NEQ     = 'neq'
+    OP_SGT     = 'sgt'
+    OP_UGT     = 'ugt'
+    OP_SGTE    = 'sgte'
+    OP_UGTE    = 'ugte'
+    OP_SLT     = 'slt'
+    OP_ULT     = 'ult'
+    OP_SLTE    = 'slte'
+    OP_ULTE    = 'ulte'
+
+    OP_AND = 'and'
+    OP_OR  = 'or'
+    OP_XOR = 'xor'
+
+    OP_SLL = 'sll'
+    OP_SRL = 'srl'
+    OP_SRA = 'sra'
+
+    OP_ADD  = 'add'
+    OP_SUB  = 'sub'
+    OP_MUL  = 'mul'
+    OP_SDIV = 'sdiv'
+    OP_UDIV = 'udiv'
+    OP_SREM = 'srem'
+    OP_UREM = 'urem'
+
+    OP_CONCAT = 'concat'
+    OP_READ   = 'read'
+
+    OP_ITE   = 'ite'
+    OP_WRITE = 'write'
+
+    OP_BAD        = 'bad'
+    OP_CONSTRAINT = 'constraint'
+
+init_btor2_keywords_operators()
+
+current_nid = 0
+
+def next_nid(nid = None):
+    if nid is None:
+        global current_nid
+        current_nid += 1
+        return current_nid
+    else:
+        return nid
 
 class model_error(Exception):
     def __init__(self, expected, line_no):
@@ -133,7 +209,9 @@ class Bitwuzla():
         self.bitwuzla = None
 
 class Line(Z3, Bitwuzla):
-    lines = dict()
+    lines = {}
+
+    count = 0
 
     def __init__(self, nid, comment, line_no):
         Z3.__init__(self)
@@ -147,14 +225,15 @@ class Line(Z3, Bitwuzla):
         return self.__str__()
 
     def new_line(self):
-        assert self not in Line.lines
+        assert self.nid not in Line.lines, f"nid {self.nid} already defined @ {self.line_no}"
         Line.lines[self.nid] = self
+        type(self).count += 1
 
     def is_defined(nid):
         return nid in Line.lines
 
     def get(nid):
-        assert nid in Line.lines
+        assert Line.is_defined(nid), f"undefined nid {self.nid} @ {self.line_no}"
         return Line.lines[nid]
 
 class Sort(Line):
@@ -179,9 +258,16 @@ class Bitvector(Sort):
     def match_init_sorts(self, sort):
         return self.match_sorts(sort)
 
+    def is_mapped_array(self):
+        return False
+
 class Bool(Bitvector):
+    boolean = None
+
     def __init__(self, nid, comment, line_no):
         super().__init__(nid, 1, comment, line_no)
+        assert Bool.boolean is None
+        Bool.boolean = self
 
     def match_sorts(self, sort):
         return super().match_sorts(sort)
@@ -216,6 +302,10 @@ class Bitvec(Bitvector):
 class Array(Sort):
     keyword = ARRAY
 
+    # map arrays up to size bound to bitvectors
+
+    ARRAY_SIZE_BOUND = 0 # array size in bits
+
     def __init__(self, nid, array_size_line, element_size_line, comment, line_no):
         super().__init__(nid, comment, line_no)
         self.array_size_line = array_size_line
@@ -237,6 +327,13 @@ class Array(Sort):
         # allow constant arrays: array init with bitvector
         return (self.match_sorts(sort)
             or (isinstance(sort, Bitvec) and self.element_size_line.match_sorts(sort)))
+
+    def is_mapped_array(self):
+        return self.array_size_line.size <= Array.ARRAY_SIZE_BOUND
+
+    def accommodate_array_indexes(nid):
+        # shift left by log10(2**n + 1) decimal digits where n is the array index space
+        return nid * 10**math.ceil(math.log10(2**Array.ARRAY_SIZE_BOUND + 1))
 
     def get_z3(self):
         if self.z3 is None:
@@ -260,10 +357,13 @@ class Expression(Line):
 
 class Constant(Expression):
     def __init__(self, nid, sid_line, value, comment, line_no):
-        super().__init__(nid, sid_line, dict(), comment, line_no)
+        super().__init__(nid, sid_line, {}, comment, line_no)
         self.value = value
-        if value >= 2**sid_line.size:
+        if not(0 <= value < 2**sid_line.size or -2**(sid_line.size - 1) <= value < 2**(sid_line.size - 1)):
             raise model_error(f"{value} in range of {sid_line.size}-bit bitvector", line_no)
+
+    def get_mapped_array_expression_for(self, index):
+        return self
 
     def get_z3(self):
         if self.z3 is None:
@@ -331,56 +431,88 @@ class Consth(Constant):
 class Variable(Expression):
     keywords = {OP_INPUT, OP_STATE}
 
-    inputs = dict()
+    inputs = {}
 
-    def __init__(self, nid, sid_line, domain, symbol, comment, line_no):
+    def __init__(self, nid, sid_line, domain, symbol, comment, line_no, index):
         super().__init__(nid, sid_line, domain, comment, line_no)
         self.symbol = symbol
+        self.new_mapped_array(index)
 
-    def new_input(self):
-        assert self not in Variable.inputs
-        Variable.inputs[self.nid] = self
+    def new_mapped_array(self, index):
+        self.index = index
+        if index is not None:
+            if not isinstance(self.sid_line, Bitvector):
+                raise model_error("bitvector", self.line_no)
+        elif self.sid_line.is_mapped_array():
+            self.array = {}
+            for index in range(2**self.sid_line.array_size_line.size):
+                self.array[index] = type(self)(self.nid + index + 1, self.sid_line.element_size_line,
+                    self.symbol, f"{self.comment} @ index {index}", self.line_no, index)
 
-class Input(Variable):
-    keyword = OP_INPUT
+    def new_input(self, index):
+        if index is not None or not self.sid_line.is_mapped_array():
+            assert self.nid not in Variable.inputs, f"variable nid {self.nid} already defined @ {self.line_no}"
+            Variable.inputs[self.nid] = self
 
-    def __init__(self, nid, sid_line, symbol, comment, line_no):
-        super().__init__(nid, sid_line, dict(), symbol, comment, line_no)
-        self.name = f"input{self.nid}"
-        self.new_input()
-
-    def __str__(self):
-        return f"{self.nid} {Input.keyword} {self.sid_line.nid} {self.symbol} {self.comment}"
+    def get_mapped_array_expression_for(self, index):
+        if isinstance(self.sid_line, Bitvector) or self.sid_line.is_mapped_array():
+            if self.init_line is not None and self.next_line is not None and self.next_line.exp_line is self:
+                # propagate initial value of initialized read-only bitvector states
+                return self.init_line.exp_line.get_mapped_array_expression_for(index)
+        if index is not None:
+            assert self.sid_line.is_mapped_array()
+            return self.array[index]
+        else:
+            assert not self.sid_line.is_mapped_array()
+            return self
 
     def get_z3(self):
         if self.z3 is None:
             self.z3 = z3.Const(self.name, self.sid_line.get_z3())
         return self.z3
 
+class Input(Variable):
+    keyword = OP_INPUT
+
+    def __init__(self, nid, sid_line, symbol, comment, line_no, index = None):
+        super().__init__(nid, sid_line, {}, symbol, comment, line_no, index)
+        self.name = f"input{self.nid}"
+        self.new_input(index)
+
+    def __str__(self):
+        return f"{self.nid} {Input.keyword} {self.sid_line.nid} {self.symbol} {self.comment}"
+
+    def get_z3_step(self, step):
+        return self.get_z3()
+
     def get_bitwuzla(self, tm):
         if self.bitwuzla is None:
             self.bitwuzla = tm.mk_const(self.sid_line.get_bitwuzla(tm), self.name)
         return self.bitwuzla
 
-class State(Variable):
+    def get_bitwuzla_step(self, step, tm):
+        return self.get_bitwuzla(tm)
+
+class Cache():
+    def __init__(self):
+        self.cache_z3 = {}
+        self.cache_bitwuzla = {}
+
+class State(Variable, Cache):
     keyword = OP_STATE
 
-    states = dict()
+    states = {}
 
     pc = None
 
-    def __init__(self, nid, sid_line, symbol, comment, line_no):
-        super().__init__(nid, sid_line, {nid:self}, symbol, comment, line_no)
-        self.name = f"state{nid}"
-        self.init_line = self
-        self.next_line = self
-        self.step_z3 = 0
-        self.current_z3 = None
-        self.next_z3 = None
-        self.step_bitwuzla = 0
-        self.current_bitwuzla = None
-        self.next_bitwuzla = None
-        self.new_state()
+    def __init__(self, nid, sid_line, symbol, comment, line_no, index = None):
+        # domain is ordered set by using dictionary with None values
+        Variable.__init__(self, nid, sid_line, {self:None}, symbol, comment, line_no, index)
+        Cache.__init__(self)
+        self.name = f"state{self.nid}"
+        self.init_line = None
+        self.next_line = None
+        self.new_state(index)
         # rotor-dependent program counter declaration
         if comment == "; program counter":
             State.pc = self
@@ -388,86 +520,61 @@ class State(Variable):
     def __str__(self):
         return f"{self.nid} {State.keyword} {self.sid_line.nid} {self.symbol} {self.comment}"
 
-    def new_state(self):
-        assert self not in State.states
-        State.states[self.nid] = self
+    def new_state(self, index):
+        if index is not None or not self.sid_line.is_mapped_array():
+            assert self.nid not in State.states, f"state nid {self.nid} already defined @ {self.line_no}"
+            State.states[self.nid] = self
 
-    def get_z3(self):
-        if self.z3 is None:
-            self.z3 = z3.Const(self.name, self.sid_line.get_z3())
-        return self.z3
-
-    def get_z3_lambda(term, domain):
-        if domain:
-            return z3.Lambda([state.get_z3() for state in domain.values()], term)
-        else:
-            return term
+    def remove_state(self):
+        for key in State.states.keys():
+            if State.states[key] is self:
+                del State.states[key]
+                return
 
     def get_step_name(self, step):
         return f"{self.name}-{step}"
 
-    def get_z3_state(self, step):
-        return z3.Const(self.get_step_name(step), self.sid_line.get_z3())
-
     def get_z3_step(self, step):
-        assert self.step_z3 <= step <= self.step_z3 + 1
-        if step == self.step_z3:
-            if self.current_z3 is None:
-                self.current_z3 = self.get_z3_state(step)
-            return self.current_z3
-        elif step == self.step_z3 + 1:
-            if self.next_z3 is None:
-                self.next_z3 = self.get_z3_state(step)
-            return self.next_z3
+        if step not in self.cache_z3:
+            self.cache_z3[step] = z3.Const(self.get_step_name(step), self.sid_line.get_z3())
+        return self.cache_z3[step]
 
-    def get_z3_select(term, domain, step):
+    def get_z3_lambda(term, domain):
         if domain:
-            return z3.Select(term, *[state.get_z3_step(step) for state in domain.values()])
+            return z3.Lambda([state.get_z3() for state in domain], term)
         else:
             return term
 
-    def take_z3_step(self):
-        self.current_z3 = self.next_z3
-        self.step_z3 += 1
-        self.next_z3 = self.get_z3_state(self.step_z3 + 1)
+    def get_z3_select(term, domain, step):
+        if domain:
+            return z3.Select(term, *[state.get_z3_step(step) for state in domain])
+        else:
+            return term
 
     def get_bitwuzla(self, tm):
         if self.bitwuzla is None:
             self.bitwuzla = tm.mk_var(self.sid_line.get_bitwuzla(tm), self.name)
         return self.bitwuzla
 
+    def get_bitwuzla_step(self, step, tm):
+        if step not in self.cache_bitwuzla:
+            self.cache_bitwuzla[step] = tm.mk_const(self.sid_line.get_bitwuzla(tm),
+                self.get_step_name(step))
+        return self.cache_bitwuzla[step]
+
     def get_bitwuzla_lambda(term, domain, tm):
         if domain:
             return tm.mk_term(bitwuzla.Kind.LAMBDA,
-                [*[state.get_bitwuzla(tm) for state in domain.values()], term])
+                [*[state.get_bitwuzla(tm) for state in domain], term])
         else:
             return term
-
-    def get_bitwuzla_state(self, step, tm):
-        return tm.mk_const(self.sid_line.get_bitwuzla(tm), self.get_step_name(step))
-
-    def get_bitwuzla_step(self, step, tm):
-        assert self.step_bitwuzla <= step <= self.step_bitwuzla + 1
-        if step == self.step_bitwuzla:
-            if self.current_bitwuzla is None:
-                self.current_bitwuzla = self.get_bitwuzla_state(step, tm)
-            return self.current_bitwuzla
-        elif step == self.step_bitwuzla + 1:
-            if self.next_bitwuzla is None:
-                self.next_bitwuzla = self.get_bitwuzla_state(step, tm)
-            return self.next_bitwuzla
 
     def get_bitwuzla_select(term, domain, step, tm):
         if domain:
             return tm.mk_term(bitwuzla.Kind.APPLY,
-                [term, *[state.get_bitwuzla_step(step, tm) for state in domain.values()]])
+                [term, *[state.get_bitwuzla_step(step, tm) for state in domain]])
         else:
             return term
-
-    def take_bitwuzla_step(self, tm):
-        self.current_bitwuzla = self.next_bitwuzla
-        self.step_bitwuzla += 1
-        self.next_bitwuzla = self.get_bitwuzla_state(self.step_bitwuzla + 1, tm)
 
 class Indexed(Expression):
     def __init__(self, nid, sid_line, arg1_line, comment, line_no):
@@ -479,6 +586,10 @@ class Indexed(Expression):
             raise model_error("bitvector result", line_no)
         if not isinstance(arg1_line.sid_line, Bitvec):
             raise model_error("bitvector operand", line_no)
+
+    def get_mapped_array_expression_for(self, index):
+        arg1_line = self.arg1_line.get_mapped_array_expression_for(None)
+        return self.copy(arg1_line)
 
 class Ext(Indexed):
     keywords = {OP_SEXT, OP_UEXT}
@@ -492,6 +603,12 @@ class Ext(Indexed):
 
     def __str__(self):
         return f"{self.nid} {self.op} {self.sid_line.nid} {self.arg1_line.nid} {self.w} {self.comment}"
+
+    def copy(self, arg1_line):
+        if self.arg1_line is not arg1_line:
+            return Ext(next_nid(), self.op, self.sid_line, arg1_line, self.w, self.comment, self.line_no)
+        else:
+            return self
 
     def get_z3(self):
         if self.z3 is None:
@@ -528,6 +645,12 @@ class Slice(Indexed):
     def __str__(self):
         return f"{self.nid} {Slice.keyword} {self.sid_line.nid} {self.arg1_line.nid} {self.u} {self.l} {self.comment}"
 
+    def copy(self, arg1_line):
+        if self.arg1_line is not arg1_line:
+            return Slice(next_nid(), self.sid_line, arg1_line, self.u, self.l, self.comment, self.line_no)
+        else:
+            return self
+
     def get_z3(self):
         if self.z3 is None:
             self.z3 = z3.Extract(self.u, self.l, self.arg1_line.get_z3())
@@ -557,6 +680,16 @@ class Unary(Expression):
 
     def __str__(self):
         return f"{self.nid} {self.op} {self.sid_line.nid} {self.arg1_line.nid} {self.comment}"
+
+    def copy(self, arg1_line):
+        if self.arg1_line is not arg1_line:
+            return type(self)(next_nid(), self.op, self.sid_line, arg1_line, self.comment, self.line_no)
+        else:
+            return self
+
+    def get_mapped_array_expression_for(self, index):
+        arg1_line = self.arg1_line.get_mapped_array_expression_for(None)
+        return self.copy(arg1_line)
 
     def get_z3(self):
         if self.z3 is None:
@@ -604,6 +737,17 @@ class Binary(Expression):
 
     def __str__(self):
         return f"{self.nid} {self.op} {self.sid_line.nid} {self.arg1_line.nid} {self.arg2_line.nid} {self.comment}"
+
+    def copy(self, arg1_line, arg2_line):
+        if self.arg1_line is not arg1_line or self.arg2_line is not arg2_line:
+            return type(self)(next_nid(), self.op, self.sid_line, arg1_line, arg2_line, self.comment, self.line_no)
+        else:
+            return self
+
+    def get_mapped_array_expression_for(self, index):
+        arg1_line = self.arg1_line.get_mapped_array_expression_for(None)
+        arg2_line = self.arg2_line.get_mapped_array_expression_for(None)
+        return self.copy(arg1_line, arg2_line)
 
 class Implies(Binary):
     keyword = OP_IMPLIES
@@ -830,6 +974,8 @@ class Concat(Binary):
 class Read(Binary):
     keyword = OP_READ
 
+    READ_ARRAY_ITERATIVELY = True
+
     def __init__(self, nid, op, sid_line, arg1_line, arg2_line, comment, line_no):
         super().__init__(nid, Read.keyword, sid_line, arg1_line, arg2_line, comment, line_no)
         if not isinstance(arg1_line.sid_line, Array):
@@ -838,6 +984,68 @@ class Read(Binary):
             raise model_error("compatible first operand array size and second operand sorts", line_no)
         if not sid_line.match_sorts(arg1_line.sid_line.element_size_line):
             raise model_error("compatible result and first operand element size sorts", line_no)
+        self.read_cache = None
+
+    def read_array_iterative(self, array_line, index_line):
+        for index in array_line.array.keys():
+            if index == 0:
+                read_line = array_line.get_mapped_array_expression_for(0)
+            else:
+                read_line = Ite(next_nid(), self.sid_line,
+                    Comparison(next_nid(), OP_EQ, Bool.boolean,
+                        index_line,
+                        Constd(next_nid(), index_line.sid_line,
+                            index, f"index {index}", self.line_no),
+                        f"is address equal to index {index}?", self.line_no),
+                    array_line.get_mapped_array_expression_for(index),
+                    read_line,
+                    f"read value from {array_line.comment[2:]} @ address if equal to index {index}", self.line_no)
+        return read_line
+
+    def read_array_recursive(self, array_line, index_line, index_array, zero_line):
+        assert 2 <= len(index_array) == 2**math.log2(len(index_array))
+        if len(index_array) == 2:
+            even_line = array_line.get_mapped_array_expression_for(index_array[0])
+            odd_line = array_line.get_mapped_array_expression_for(index_array[1])
+        else:
+            even_line = self.read_array_recursive(array_line, index_line,
+                index_array[0:len(index_array)//2], zero_line)
+            odd_line = self.read_array_recursive(array_line, index_line,
+                index_array[len(index_array)//2:len(index_array)], zero_line)
+        address_bit = int(math.log2(len(index_array))) - 1
+        return Ite(next_nid(), self.sid_line,
+            Comparison(next_nid(), OP_EQ, Bool.boolean,
+                Slice(next_nid(), zero_line.sid_line, index_line,
+                    address_bit, address_bit,
+                    f"extract {address_bit}-th address bit", self.line_no),
+                zero_line,
+                f"is {address_bit}-th address bit set?", self.line_no),
+            even_line,
+            odd_line,
+            f"read value from {array_line.comment[2:]} @ reset or set {address_bit}-th address bit", self.line_no)
+
+    def read_array(self, array_line, index_line):
+        if array_line.sid_line.is_mapped_array():
+            if isinstance(index_line, Constant):
+                return array_line.get_mapped_array_expression_for(index_line.value)
+            else:
+                if Read.READ_ARRAY_ITERATIVELY:
+                    return self.read_array_iterative(array_line, index_line)
+                else:
+                    return self.read_array_recursive(array_line, index_line,
+                        list(array_line.array.keys()),
+                        Zero(next_nid(),
+                            Bitvec(next_nid(), 1, "1-bit bitvector for testing bits", self.line_no),
+                            "zero value for testing bits", self.line_no))
+        else:
+            return self.copy(array_line, index_line)
+
+    def get_mapped_array_expression_for(self, index):
+        if self.read_cache is None: # avoids quadratic blowup in mapped array size
+            arg1_line = self.arg1_line # map later when index is known
+            arg2_line = self.arg2_line.get_mapped_array_expression_for(None)
+            self.read_cache = self.read_array(arg1_line, arg2_line)
+        return self.read_cache
 
     def get_z3(self):
         if self.z3 is None:
@@ -872,7 +1080,10 @@ class Ternary(Expression):
 class Ite(Ternary):
     keyword = OP_ITE
 
-    def __init__(self, nid, op, sid_line, arg1_line, arg2_line, arg3_line, comment, line_no):
+    branching_conditions = None
+    non_branching_conditions = None
+
+    def __init__(self, nid, sid_line, arg1_line, arg2_line, arg3_line, comment, line_no):
         super().__init__(nid, Ite.keyword, sid_line, arg1_line, arg2_line, arg3_line, comment, line_no)
         if not isinstance(arg1_line.sid_line, Bool):
             raise model_error("Boolean first operand", line_no)
@@ -880,12 +1091,37 @@ class Ite(Ternary):
             raise model_error("compatible result and second operand sorts", line_no)
         if not arg2_line.sid_line.match_sorts(arg3_line.sid_line):
             raise model_error("compatible second and third operand sorts", line_no)
+        if comment == "; branch true condition":
+            Ite.branching_conditions = self
+            self.z3_lambda_line = None
+            self.bitwuzla_lambda_line = None
+        elif comment == "; branch false condition":
+            Ite.non_branching_conditions = self
+            self.z3_lambda_line = None
+            self.bitwuzla_lambda_line = None
+
+    def copy(self, arg1_line, arg2_line, arg3_line):
+        if self.arg1_line is not arg1_line or self.arg2_line is not arg2_line or self.arg3_line is not arg3_line:
+            return Ite(next_nid(), arg2_line.sid_line, arg1_line, arg2_line, arg3_line, self.comment, self.line_no)
+        else:
+            return self
+
+    def get_mapped_array_expression_for(self, index):
+        arg1_line = self.arg1_line.get_mapped_array_expression_for(None)
+        arg2_line = self.arg2_line.get_mapped_array_expression_for(index)
+        arg3_line = self.arg3_line.get_mapped_array_expression_for(index)
+        return self.copy(arg1_line, arg2_line, arg3_line)
 
     def get_z3(self):
         if self.z3 is None:
             self.z3 = z3.If(self.arg1_line.get_z3(),
                 self.arg2_line.get_z3(), self.arg3_line.get_z3())
         return self.z3
+
+    def get_z3_step(self, step):
+        if self.z3_lambda_line is None:
+            self.z3_lambda_line = State.get_z3_lambda(self.get_z3(), self.domain)
+        return State.get_z3_select(self.z3_lambda_line, self.domain, step)
 
     def get_bitwuzla(self, tm):
         if self.bitwuzla is None:
@@ -895,10 +1131,15 @@ class Ite(Ternary):
                 self.arg3_line.get_bitwuzla(tm)])
         return self.bitwuzla
 
+    def get_bitwuzla_step(self, step, tm):
+        if self.bitwuzla_lambda_line is None:
+            self.bitwuzla_lambda_line = State.get_bitwuzla_lambda(self.get_bitwuzla(tm), self.domain, tm)
+        return State.get_bitwuzla_select(self.bitwuzla_lambda_line, self.domain, step, tm)
+
 class Write(Ternary):
     keyword = OP_WRITE
 
-    def __init__(self, nid, op, sid_line, arg1_line, arg2_line, arg3_line, comment, line_no):
+    def __init__(self, nid, sid_line, arg1_line, arg2_line, arg3_line, comment, line_no):
         super().__init__(nid, Write.keyword, sid_line, arg1_line, arg2_line, arg3_line, comment, line_no)
         if not isinstance(sid_line, Array):
             raise model_error("array result", line_no)
@@ -908,6 +1149,43 @@ class Write(Ternary):
             raise model_error("compatible first operand array size and second operand sorts", line_no)
         if not arg1_line.sid_line.element_size_line.match_sorts(arg3_line.sid_line):
             raise model_error("compatible first operand element size and third operand sorts", line_no)
+        self.write_cache = {}
+
+    def copy(self, arg1_line, arg2_line, arg3_line):
+        if self.arg1_line is not arg1_line or self.arg2_line is not arg2_line or self.arg3_line is not arg3_line:
+            return Write(next_nid(), arg1_line.sid_line, arg1_line, arg2_line, arg3_line, self.comment, self.line_no)
+        else:
+            return self
+
+    def write_array(self, array_line, index_line, value_line, index):
+        if self.sid_line.is_mapped_array():
+            assert index is not None
+            if isinstance(index_line, Constant):
+                if index_line.value == index:
+                    return value_line
+                else:
+                    return array_line
+            else:
+                return Ite(next_nid(), value_line.sid_line,
+                    Comparison(next_nid(), OP_EQ, Bool.boolean,
+                        index_line,
+                        Constd(next_nid(), index_line.sid_line,
+                            index, f"index {index}", self.line_no),
+                        f"is address equal to index {index}?", self.line_no),
+                    value_line,
+                    array_line,
+                    f"write value to {array_line.comment[2:]} @ address if equal to index {index}", self.line_no)
+        else:
+            assert index is None
+            return self.copy(array_line, index_line, value_line)
+
+    def get_mapped_array_expression_for(self, index):
+        if index not in self.write_cache:
+            arg1_line = self.arg1_line.get_mapped_array_expression_for(index)
+            arg2_line = self.arg2_line.get_mapped_array_expression_for(None)
+            arg3_line = self.arg3_line.get_mapped_array_expression_for(None)
+            self.write_cache[index] = self.write_array(arg1_line, arg2_line, arg3_line, index)
+        return self.write_cache[index]
 
     def get_z3(self):
         if self.z3 is None:
@@ -923,51 +1201,85 @@ class Write(Ternary):
                 self.arg3_line.get_bitwuzla(tm)])
         return self.bitwuzla
 
-class Sequential(Line):
-    def __init__(self, nid, exp_line, comment, line_no):
-        super().__init__(nid, comment, line_no)
-        self.exp_line = exp_line
-        self.step_z3 = 0
+class Sequential(Line, Cache):
+    def __init__(self, nid, comment, line_no):
+        Line.__init__(self, nid, comment, line_no)
+        Cache.__init__(self)
         self.z3_lambda_line = None
-        self.step_bitwuzla = 0
+        self.cache_z3_select = {}
         self.bitwuzla_lambda_line = None
-        if not isinstance(exp_line, Expression):
-            raise model_error("expression operand", line_no)
+        self.cache_bitwuzla_select = {}
 
-class Init(Sequential):
-    keyword = OP_INIT
-
-    inits = dict()
-
-    def __init__(self, nid, sid_line, state_line, exp_line, comment, line_no):
-        super().__init__(nid, exp_line, comment, line_no)
+class Transitional(Sequential):
+    def __init__(self, nid, sid_line, state_line, exp_line, comment, line_no, array_line, index):
+        super().__init__(nid, comment, line_no)
         self.sid_line = sid_line
         self.state_line = state_line
+        self.exp_line = exp_line
         if not isinstance(sid_line, Sort):
             raise model_error("sort", line_no)
         if not isinstance(state_line, State):
             raise model_error("state operand", line_no)
+        if not isinstance(exp_line, Expression):
+            raise model_error("expression operand", line_no)
         if not self.sid_line.match_sorts(state_line.sid_line):
             raise model_error("compatible line and state sorts", line_no)
         if not state_line.sid_line.match_init_sorts(exp_line.sid_line):
             raise model_error("compatible state and expression sorts", line_no)
+        self.new_mapped_array(array_line, index)
+
+    def new_mapped_array(self, array_line, index):
+        self.array_line = array_line
+        self.index = index
+        if index is not None:
+            if not isinstance(self.sid_line, Bitvector):
+                raise model_error("bitvector", self.line_no)
+        elif self.sid_line.is_mapped_array():
+            self.array = {}
+            for index in self.state_line.array.keys():
+                self.array[index] = type(self)(self.nid + index + 1, self.sid_line.element_size_line,
+                    self.state_line.array[index], self.state_line.array[index],
+                    f"{self.comment} @ index {index}", self.line_no, self, index)
+
+    def set_mapped_array_expression(self):
+        if self.index is None:
+            self.exp_line = self.exp_line.get_mapped_array_expression_for(None)
+        else:
+            self.exp_line = self.array_line.exp_line.get_mapped_array_expression_for(self.index)
+
+    def remove_transition(state_line, transitions):
+        for key in transitions.keys():
+            if transitions[key].state_line is state_line:
+                del transitions[key]
+                return
+
+    def new_transition(self, transitions, index):
+        if index is not None or not self.sid_line.is_mapped_array():
+            assert self.nid not in transitions, f"transition nid {self.nid} already defined @ {self.line_no}"
+            transitions[self.nid] = self
+
+class Init(Transitional):
+    keyword = OP_INIT
+
+    inits = {}
+
+    def __init__(self, nid, sid_line, state_line, exp_line, comment, line_no, array_line = None, index = None):
+        super().__init__(nid, sid_line, state_line, exp_line, comment, line_no, array_line, index)
         if state_line.nid < exp_line.nid:
             raise model_error("state after expression", line_no)
-        if self.state_line.init_line == self.state_line:
+        if isinstance(state_line, Input):
+            raise model_error("state, not input", line_no)
+        if self.state_line.init_line is None:
             self.state_line.init_line = self
         else:
             raise model_error("uninitialized state", line_no)
-        self.new_init()
+        self.new_transition(Init.inits, index)
 
     def __str__(self):
         return f"{self.nid} {Init.keyword} {self.sid_line.nid} {self.state_line.nid} {self.exp_line.nid} {self.comment}"
 
-    def new_init(self):
-        assert self not in Init.inits
-        Init.inits[self.nid] = self
-
     def get_z3_step(self, step):
-        assert step == 0
+        assert step == 0, f"z3 init with {step} != 0"
         if isinstance(self.sid_line, Array) and isinstance(self.exp_line.sid_line, Bitvec):
             # initialize with constant array
             return self.state_line.get_z3_step(0) == z3.K(
@@ -979,7 +1291,7 @@ class Init(Sequential):
                 self.exp_line.domain, 0)
 
     def get_bitwuzla_step(self, step, tm):
-        assert step == 0
+        assert step == 0, f"bitwuzla init with {step} != 0"
         if isinstance(self.sid_line, Array) and isinstance(self.exp_line.sid_line, Bitvec):
             # initialize with constant array
             return tm.mk_term(bitwuzla.Kind.EQUAL,
@@ -994,125 +1306,149 @@ class Init(Sequential):
                         self.exp_line.get_bitwuzla(tm), self.exp_line.domain, tm),
                     self.exp_line.domain, 0, tm)])
 
-class Next(Sequential):
+class Next(Transitional):
     keyword = OP_NEXT
 
-    nexts = dict()
+    nexts = {}
 
-    def __init__(self, nid, sid_line, state_line, exp_line, comment, line_no):
-        super().__init__(nid, exp_line, comment, line_no)
-        self.sid_line = sid_line
-        self.state_line = state_line
-        if not isinstance(sid_line, Sort):
-            raise model_error("sort", line_no)
-        if not isinstance(state_line, State):
-            raise model_error("state operand", line_no)
-        if not self.sid_line.match_sorts(state_line.sid_line):
-            raise model_error("compatible line and state sorts", line_no)
-        if not state_line.sid_line.match_sorts(exp_line.sid_line):
-            raise model_error("compatible state and expression sorts", line_no)
-        if self.state_line.next_line == self.state_line:
+    def __init__(self, nid, sid_line, state_line, exp_line, comment, line_no, array_line = None, index = None):
+        super().__init__(nid, sid_line, state_line, exp_line, comment, line_no, array_line, index)
+        self.cache_z3_change = {}
+        self.cache_z3_no_change = {}
+        self.cache_bitwuzla_change = {}
+        self.cache_bitwuzla_no_change = {}
+        if self.state_line.next_line is None:
             self.state_line.next_line = self
         else:
             raise model_error("untransitioned state", line_no)
-        self.new_next()
+        self.new_transition(Next.nexts, index)
 
     def __str__(self):
         return f"{self.nid} {Next.keyword} {self.sid_line.nid} {self.state_line.nid} {self.exp_line.nid} {self.comment}"
 
-    def new_next(self):
-        assert self not in Next.nexts
-        Next.nexts[self.nid] = self
-
-    def get_z3_step(self, step):
+    def get_z3_lambda(self):
         if self.z3_lambda_line is None:
             self.z3_lambda_line = State.get_z3_lambda(
                 self.exp_line.get_z3(), self.exp_line.domain)
-        assert step == self.step_z3
-        self.step_z3 = step + 1
-        return self.state_line.get_z3_step(step + 1) == State.get_z3_select(
-            self.z3_lambda_line, self.exp_line.domain, step)
+        return self.z3_lambda_line
+
+    def get_z3_select(self, step):
+        if step not in self.cache_z3_select:
+            self.cache_z3_select[step] = State.get_z3_select(
+                self.get_z3_lambda(), self.exp_line.domain, step)
+        return self.cache_z3_select[step]
+
+    def get_z3_step(self, step):
+        if step not in self.cache_z3:
+            self.cache_z3[step] = self.state_line.get_z3_step(step + 1) == self.get_z3_select(step)
+        return self.cache_z3[step]
 
     def get_z3_change(self, step):
-        assert step == self.step_z3 - 1
-        return self.state_line.get_z3_step(step + 1) != self.state_line.get_z3_step(step)
+        if step not in self.cache_z3_change:
+            self.cache_z3_change[step] = self.state_line.get_z3_step(step) != self.get_z3_select(step)
+        return self.cache_z3_change[step]
 
-    def get_bitwuzla_step(self, step, tm):
+    def get_z3_no_change(self, step):
+        if step not in self.cache_z3_no_change:
+            self.cache_z3_no_change[step] = self.state_line.get_z3_step(step + 1) == self.state_line.get_z3_step(step)
+        return self.cache_z3_no_change[step]
+
+    def get_bitwuzla_lambda(self, tm):
         if self.bitwuzla_lambda_line is None:
             self.bitwuzla_lambda_line = State.get_bitwuzla_lambda(
                 self.exp_line.get_bitwuzla(tm), self.exp_line.domain, tm)
-        assert step == self.step_bitwuzla
-        self.step_bitwuzla = step + 1
-        return tm.mk_term(bitwuzla.Kind.EQUAL,
-            [self.state_line.get_bitwuzla_step(step + 1, tm),
-            State.get_bitwuzla_select(self.bitwuzla_lambda_line, self.exp_line.domain, step, tm)])
+        return self.bitwuzla_lambda_line
+
+    def get_bitwuzla_select(self, step, tm):
+        if step not in self.cache_bitwuzla_select:
+            self.cache_bitwuzla_select[step] = State.get_bitwuzla_select(
+                self.get_bitwuzla_lambda(tm), self.exp_line.domain, step, tm)
+        return self.cache_bitwuzla_select[step]
+
+    def get_bitwuzla_step(self, step, tm):
+        if step not in self.cache_bitwuzla:
+            self.cache_bitwuzla[step] = tm.mk_term(bitwuzla.Kind.EQUAL,
+                [self.state_line.get_bitwuzla_step(step + 1, tm),
+                    self.get_bitwuzla_select(step, tm)])
+        return self.cache_bitwuzla[step]
 
     def get_bitwuzla_change(self, step, tm):
-        assert step == self.step_bitwuzla - 1
-        return tm.mk_term(bitwuzla.Kind.DISTINCT,
-            [self.state_line.get_bitwuzla_step(step + 1, tm),
-            self.state_line.get_bitwuzla_step(step, tm)])
+        if step not in self.cache_bitwuzla_change:
+            self.cache_bitwuzla_change[step] = tm.mk_term(bitwuzla.Kind.DISTINCT,
+                [self.state_line.get_bitwuzla_step(step, tm),
+                    self.get_bitwuzla_select(step, tm)])
+        return self.cache_bitwuzla_change[step]
+
+    def get_bitwuzla_no_change(self, step, tm):
+        if step not in self.cache_bitwuzla_no_change:
+            self.cache_bitwuzla_no_change[step] = tm.mk_term(bitwuzla.Kind.EQUAL,
+                [self.state_line.get_bitwuzla_step(step + 1, tm),
+                self.state_line.get_bitwuzla_step(step, tm)])
+        return self.cache_bitwuzla_no_change[step]
 
 class Property(Sequential):
     keywords = {OP_CONSTRAINT, OP_BAD}
 
     def __init__(self, nid, property_line, symbol, comment, line_no):
-        super().__init__(nid, property_line, comment, line_no)
+        super().__init__(nid, comment, line_no)
+        self.property_line = property_line
         self.symbol = symbol
+        if not isinstance(property_line, Expression):
+            raise model_error("expression operand", line_no)
         if not isinstance(property_line.sid_line, Bool):
             raise model_error("Boolean operand", line_no)
+
+    def set_mapped_array_expression(self):
+        self.property_line = self.property_line.get_mapped_array_expression_for(None)
 
     def get_z3_step(self, step):
         if self.z3_lambda_line is None:
             self.z3_lambda_line = State.get_z3_lambda(
-                self.exp_line.get_z3(), self.exp_line.domain)
-        assert self.step_z3 <= step <= self.step_z3 + 1
-        if (step == self.step_z3 and self.z3 is None) or step == self.step_z3 + 1:
-            self.z3 = State.get_z3_select(self.z3_lambda_line, self.exp_line.domain, step)
-        self.step_z3 = step
-        return self.z3
+                self.property_line.get_z3(), self.property_line.domain)
+        if step not in self.cache_z3:
+            self.cache_z3[step] = State.get_z3_select(
+                self.z3_lambda_line, self.property_line.domain, step)
+        return self.cache_z3[step]
 
     def get_bitwuzla_step(self, step, tm):
         if self.bitwuzla_lambda_line is None:
             self.bitwuzla_lambda_line = State.get_bitwuzla_lambda(
-                self.exp_line.get_bitwuzla(tm), self.exp_line.domain, tm)
-        assert self.step_bitwuzla <= step <= self.step_bitwuzla + 1
-        if (step == self.step_bitwuzla and self.bitwuzla is None) or step == self.step_bitwuzla + 1:
-            self.bitwuzla = State.get_bitwuzla_select(
-                self.bitwuzla_lambda_line, self.exp_line.domain, step, tm)
-        self.step_bitwuzla = step
-        return self.bitwuzla
+                self.property_line.get_bitwuzla(tm), self.property_line.domain, tm)
+        if step not in self.cache_bitwuzla:
+            self.cache_bitwuzla[step] = State.get_bitwuzla_select(
+                self.bitwuzla_lambda_line, self.property_line.domain, step, tm)
+        return self.cache_bitwuzla[step]
 
 class Constraint(Property):
     keyword = OP_CONSTRAINT
 
-    constraints = dict()
+    constraints = {}
 
     def __init__(self, nid, property_line, symbol, comment, line_no):
         super().__init__(nid, property_line, symbol, comment, line_no)
         self.new_constraint()
 
     def __str__(self):
-        return f"{self.nid} {Constraint.keyword} {self.exp_line.nid} {self.symbol} {self.comment}"
+        return f"{self.nid} {Constraint.keyword} {self.property_line.nid} {self.symbol} {self.comment}"
 
     def new_constraint(self):
-        assert self not in Constraint.constraints
+        assert self not in Constraint.constraints, f"constraint nid {self.nid} already defined @ {self.line_no}"
         Constraint.constraints[self.nid] = self
 
 class Bad(Property):
     keyword = OP_BAD
 
-    bads = dict()
+    bads = {}
 
     def __init__(self, nid, property_line, symbol, comment, line_no):
         super().__init__(nid, property_line, symbol, comment, line_no)
         self.new_bad()
 
     def __str__(self):
-        return f"{self.nid} {Bad.keyword} {self.exp_line.nid} {self.symbol} {self.comment}"
+        return f"{self.nid} {Bad.keyword} {self.property_line.nid} {self.symbol} {self.comment}"
 
     def new_bad(self):
-        assert self not in Bad.bads
+        assert self.nid not in Bad.bads, f"bad nid {self.nid} already defined @ {self.line_no}"
         Bad.bads[self.nid] = self
 
 def get_class(keyword):
@@ -1161,80 +1497,75 @@ def get_class(keyword):
     elif keyword == Bad.keyword:
         return Bad
 
-current_nid = 0
+def new_boolean(nid = None, line_no = None):
+    return Bool(next_nid(nid), "Boolean", line_no)
 
-def next_nid():
-    global current_nid
-    current_nid += 1
-    return current_nid
+def new_bitvec(size_in_bits, comment, nid = None, line_no = None):
+    return Bitvec(next_nid(nid), size_in_bits, comment, line_no)
 
-def new_boolean(nid = next_nid(), line_no = None):
-    return Bool(nid, "Boolean", line_no)
+def new_array(address_sid, element_sid, comment, nid = None, line_no = None):
+    return Array(next_nid(nid), address_sid, element_sid, comment, line_no)
 
-def new_bitvec(size_in_bits, comment, nid = next_nid(), line_no = None):
-    return Bitvec(nid, size_in_bits, comment, line_no)
-
-def new_array(address_sid, element_sid, comment, nid = next_nid(), line_no = None):
-    return Array(nid, address_sid, element_sid, comment, line_no)
-
-def new_zero_one(op, sid, comment, nid = next_nid(), line_no = None):
+def new_zero_one(op, sid, comment, nid = None, line_no = None):
     assert op in {OP_ZERO, OP_ONE}
-    return get_class(op)(nid, sid, comment, line_no)
+    return get_class(op)(next_nid(nid), sid, comment, line_no)
 
-def new_constant(op, sid, constant, comment, nid = next_nid(), line_no = None):
+def new_constant(op, sid, constant, comment, nid = None, line_no = None):
     assert op in {OP_CONSTD, OP_CONST, OP_CONSTH}
     if op == OP_CONSTD:
         if constant == 0:
-            return Zero(nid, sid, comment, line_no)
+            return Zero(next_nid(nid), sid, comment, line_no)
         elif constant == 1:
-            return One(nid, sid, comment, line_no)
-    return get_class(op)(nid, sid, constant, comment, line_no)
+            return One(next_nid(nid), sid, comment, line_no)
+    return get_class(op)(next_nid(nid), sid, constant, comment, line_no)
 
-def new_input(op, sid, symbol, comment, nid = next_nid(), line_no = None):
+def new_input(op, sid, symbol, comment, nid = None, line_no = None):
     assert op in Variable.keywords
-    return get_class(op)(nid, sid, symbol, comment, line_no)
+    return get_class(op)(next_nid(nid), sid, symbol, comment, line_no)
 
-def new_ext(op, sid, value_nid, w, comment, nid = next_nid(), line_no = None):
+def new_ext(op, sid, value_nid, w, comment, nid = None, line_no = None):
     assert op in Ext.keywords
-    return get_class(op)(nid, op, sid, value_nid, w, comment, line_no)
+    return get_class(op)(next_nid(nid), op, sid, value_nid, w, comment, line_no)
 
-def new_slice(sid, value_nid, u, l, comment, nid = next_nid(), line_no = None):
-    return Slice(nid, sid, value_nid, u, l, comment, line_no)
+def new_slice(sid, value_nid, u, l, comment, nid = None, line_no = None):
+    return Slice(next_nid(nid), sid, value_nid, u, l, comment, line_no)
 
-def new_unary(op, sid, value_nid, comment, nid = next_nid(), line_no = None):
+def new_unary(op, sid, value_nid, comment, nid = None, line_no = None):
     assert op in Unary.keywords
-    return get_class(op)(nid, op, sid, value_nid, comment, line_no)
+    return get_class(op)(next_nid(nid), op, sid, value_nid, comment, line_no)
 
-def new_unary_boolean(op, value_nid, comment, nid = next_nid(), line_no = None):
+def new_unary_boolean(op, value_nid, comment, nid = None, line_no = None):
     assert op == OP_NOT
-    return get_class(op)(nid, op, SID_BOOLEAN, value_nid, comment, line_no)
+    return get_class(op)(next_nid(nid), op, SID_BOOLEAN, value_nid, comment, line_no)
 
-def new_binary(op, sid, left_nid, right_nid, comment, nid = next_nid(), line_no = None):
+def new_binary(op, sid, left_nid, right_nid, comment, nid = None, line_no = None):
     assert op in Binary.keywords
-    return get_class(op)(nid, op, sid, left_nid, right_nid, comment, line_no)
+    return get_class(op)(next_nid(nid), op, sid, left_nid, right_nid, comment, line_no)
 
-def new_binary_boolean(op, left_nid, right_nid, comment, nid = next_nid(), line_no = None):
+def new_binary_boolean(op, left_nid, right_nid, comment, nid = None, line_no = None):
     assert op in Implies.keyword + Comparison.keywords + Logical.keywords
-    return get_class(op)(nid, op, SID_BOOLEAN, left_nid, right_nid, comment, line_no)
+    return get_class(op)(next_nid(nid), op, SID_BOOLEAN, left_nid, right_nid, comment, line_no)
 
-def new_ternary(op, sid, first_nid, second_nid, third_nid, comment, nid = next_nid(), line_no = None):
+def new_ternary(op, sid, first_nid, second_nid, third_nid, comment, nid = None, line_no = None):
     assert op in Ternary.keywords
-    return get_class(op)(nid, op, sid, first_nid, second_nid, third_nid, comment, line_no)
+    return get_class(op)(next_nid(nid), sid, first_nid, second_nid, third_nid, comment, line_no)
 
-def new_init(sid, state_nid, value_nid, comment, nid = next_nid(), line_no = None):
-    return Init(nid, sid, state_nid, value_nid, comment, line_no)
+def new_init(sid, state_nid, value_nid, comment, nid = None, line_no = None):
+    return Init(next_nid(nid), sid, state_nid, value_nid, comment, line_no)
 
-def new_next(sid, state_nid, value_nid, comment, nid = next_nid(), line_no = None):
-    return Next(nid, sid, state_nid, value_nid, comment, line_no)
+def new_next(sid, state_nid, value_nid, comment, nid = None, line_no = None):
+    return Next(next_nid(nid), sid, state_nid, value_nid, comment, line_no)
 
-def new_init_next(op, sid, state_nid, value_nid, comment, nid = next_nid(), line_no = None):
-    return get_class(op)(nid, sid, state_nid, value_nid, comment, line_no)
+def new_init_next(op, sid, state_nid, value_nid, comment, nid = None, line_no = None):
+    return get_class(op)(next_nid(nid), sid, state_nid, value_nid, comment, line_no)
 
-def new_property(op, condition_nid, symbol, comment, nid = next_nid(), line_no = None):
+def new_property(op, condition_nid, symbol, comment, nid = None, line_no = None):
     assert op in Property.keywords
-    return get_class(op)(nid, condition_nid, symbol, comment, line_no)
+    return get_class(op)(next_nid(nid), condition_nid, symbol, comment, line_no)
 
 # RISC-V model generator
+
+UNUSED = None
 
 class system_error(Exception):
     def __init__(self, message):
@@ -1246,86 +1577,107 @@ IS64BITTARGET = True
 
 SIZEOFUINT64INBITS = 64
 
+# avoiding 64-bit integer overflow
+UINT64_MAX = ((2**(SIZEOFUINT64INBITS - 1) - 1) << 1) + 1
+
 WORDSIZE       = 8
 WORDSIZEINBITS = 64
 
 INSTRUCTIONSIZE = 4
 
-VIRTUALMEMORYSIZE = 4
-GIGABYTE = 1073741824
+VIRTUALMEMORYSIZE = 4 # 4GB avoiding 32-bit integer overflow
+GIGABYTE = 2**30
+
+# unsigned integer arithmetic support
+
+def is_unsigned_integer(n, b):
+    assert 0 < b <= SIZEOFUINT64INBITS
+    if b == SIZEOFUINT64INBITS:
+        # avoiding 64-bit integer overflow
+        return 0 <= n <= UINT64_MAX
+    else:
+        return 0 <= n < 2**b
+
+def is_uint64(n):
+    return is_unsigned_integer(n, SIZEOFUINT64INBITS)
+
+def is_int64(n):
+    return is_signed_integer(n, SIZEOFUINT64INBITS)
+
+# ported from selfie library
+
+def get_bits(n, i, b):
+    assert is_uint64(n)
+    assert 0 <= i + b <= SIZEOFUINT64INBITS
+    assert 0 < b
+    if b < SIZEOFUINT64INBITS:
+        return (n >> i) % 2**b
+    else:
+        # avoiding 64-bit integer overflow
+        return n >> i
+
+def is_signed_integer(n, b):
+    assert is_uint64(n)
+    assert 0 < b <= SIZEOFUINT64INBITS
+    # avoiding 64-bit integer overflow
+    return 0 <= n < 2**(b - 1) or UINT64_MAX - 2**(b - 1) <= n - 1 < UINT64_MAX
+
+def sign_shrink(n, b):
+    assert is_uint64(n)
+    assert 0 < b <= SIZEOFUINT64INBITS
+    return get_bits(n, 0, b)
+
+# ported from rotor model
+
+def get_sid(line):
+    return line.sid_line
+
+# ported from rotor emulator
+
+def eval_bitvec_size(line):
+    assert isinstance(line, Bitvec)
+    # TODO: tolerating but not yet supporting double machine word bitvectors
+    assert (line.size > 0 and line.size <= SIZEOFUINT64INBITS) or line.size == 2 * WORDSIZEINBITS
+    return line.size;
+
+def fit_bitvec_sort(sid, value):
+    size = eval_bitvec_size(sid)
+    if size >= SIZEOFUINT64INBITS:
+        # TODO: support of bitvectors larger than machine words
+        return
+    elif is_unsigned_integer(value, size):
+        return
+    raise system_error(f"{value} does not fit {size}-bit bitvector")
+
+def signed_fit_bitvec_sort(sid, value):
+    size = eval_bitvec_size(sid)
+    if size >= SIZEOFUINT64INBITS:
+        # TODO: support of bitvectors larger than machine words
+        return
+    elif is_signed_integer(value, size):
+        return
+    fit_bitvec_sort(sid, value)
+
+def eval_constant_value(line):
+    # TODO: check if really needed
+    assert isinstance(line, Constant)
+    sid   = get_sid(line)
+    value = line.value
+    if isinstance(line, Constd):
+        signed_fit_bitvec_sort(sid, value)
+        value = sign_shrink(value, eval_bitvec_size(sid))
+    else:
+        fit_bitvec_sort(sid, value)
+    return value
 
 # machine interface
 
-SID_BOOLEAN = None
-
-NID_FALSE = None
-NID_TRUE  = None
-
-SID_BYTE = None
-
-NID_BYTE_0 = None
-NID_BYTE_3 = None
-
 HALFWORDSIZEINBITS = 16
-
-SID_HALF_WORD = None
-
-NID_HALF_WORD_0 = None
-NID_HALF_WORD_1 = None
 
 SINGLEWORDSIZEINBITS = 32
 
-SID_SINGLE_WORD = None
-
-NID_SINGLE_WORD_0 = None
-NID_SINGLE_WORD_1 = None
-NID_SINGLE_WORD_2 = None
-NID_SINGLE_WORD_3 = None
-NID_SINGLE_WORD_4 = None
-NID_SINGLE_WORD_5 = None
-NID_SINGLE_WORD_6 = None
-NID_SINGLE_WORD_7 = None
-NID_SINGLE_WORD_8 = None
-
-NID_SINGLE_WORD_MINUS_1 = None
-NID_SINGLE_WORD_INT_MIN = None
-
 DOUBLEWORDSIZE = 8
 DOUBLEWORDSIZEINBITS = 64
-
-SID_DOUBLE_WORD = None
-
-NID_DOUBLE_WORD_0 = None
-NID_DOUBLE_WORD_1 = None
-NID_DOUBLE_WORD_2 = None
-NID_DOUBLE_WORD_3 = None
-NID_DOUBLE_WORD_4 = None
-NID_DOUBLE_WORD_5 = None
-NID_DOUBLE_WORD_6 = None
-NID_DOUBLE_WORD_7 = None
-NID_DOUBLE_WORD_8 = None
-
-NID_DOUBLE_WORD_MINUS_1 = None
-NID_DOUBLE_WORD_INT_MIN = None
-
-SID_MACHINE_WORD = None
-
-NID_MACHINE_WORD_0 = None
-NID_MACHINE_WORD_1 = None
-NID_MACHINE_WORD_2 = None
-NID_MACHINE_WORD_3 = None
-NID_MACHINE_WORD_4 = None
-NID_MACHINE_WORD_5 = None
-NID_MACHINE_WORD_6 = None
-NID_MACHINE_WORD_7 = None
-NID_MACHINE_WORD_8 = None
-
-NID_MACHINE_WORD_MINUS_1 = None
-NID_MACHINE_WORD_INT_MIN = None
-
-NID_LSB_MASK = None
-
-SID_DOUBLE_MACHINE_WORD = None
 
 def init_machine_interface():
     global SID_BOOLEAN
@@ -1478,30 +1830,22 @@ def init_machine_interface():
 
 MAX_STRING_LENGTH = 128
 
-NID_MAX_STRING_LENGTH = None
+def init_syscall_IDs():
+    global SYSCALL_EXIT
+    global SYSCALL_BRK
+    global SYSCALL_OPENAT
+    global SYSCALL_OPEN
+    global SYSCALL_READ
+    global SYSCALL_WRITE
 
-SYSCALL_EXIT   = 93;
-SYSCALL_BRK    = 214;
-SYSCALL_OPENAT = 56;
-SYSCALL_OPEN   = 1024 # legacy syscall
-SYSCALL_READ   = 63;
-SYSCALL_WRITE  = 64;
-
-NID_EXIT_SYSCALL_ID   = None
-NID_BRK_SYSCALL_ID    = None
-NID_OPENAT_SYSCALL_ID = None
-NID_OPEN_SYSCALL_ID   = None
-NID_READ_SYSCALL_ID   = None
-NID_WRITE_SYSCALL_ID  = None
+    SYSCALL_EXIT   = 93
+    SYSCALL_BRK    = 214
+    SYSCALL_OPENAT = 56
+    SYSCALL_OPEN   = 1024 # legacy syscall
+    SYSCALL_READ   = 63
+    SYSCALL_WRITE  = 64
 
 BYTES_TO_READ = 1
-
-NID_BYTES_TO_READ = None
-
-INPUT_ADDRESS_SPACE = 1
-
-SID_INPUT_ADDRESS = None
-SID_INPUT_BUFFER  = None
 
 def init_kernel_interface():
     global NID_MAX_STRING_LENGTH
@@ -1519,6 +1863,8 @@ def init_kernel_interface():
 
     global SID_INPUT_ADDRESS
     global SID_INPUT_BUFFER
+
+    init_syscall_IDs()
 
     NID_MAX_STRING_LENGTH = new_constant(OP_CONSTD, SID_MACHINE_WORD,
         MAX_STRING_LENGTH, "maximum string length")
@@ -1563,75 +1909,72 @@ def calculate_address_space(number_of_bytes, word_size_in_bits):
 
 # register sorts and specification
 
-SID_REGISTER_ADDRESS = None
+def init_register_IDs():
+    global REG_ZR
+    global REG_RA
+    global REG_SP
+    global REG_GP
+    global REG_TP
+    global REG_T0
+    global REG_T1
+    global REG_T2
+    global REG_S0
+    global REG_S1
+    global REG_A0
+    global REG_A1
+    global REG_A2
+    global REG_A3
+    global REG_A4
+    global REG_A5
+    global REG_A6
+    global REG_A7
+    global REG_S2
+    global REG_S3
+    global REG_S4
+    global REG_S5
+    global REG_S6
+    global REG_S7
+    global REG_S8
+    global REG_S9
+    global REG_S10
+    global REG_S11
+    global REG_T3
+    global REG_T4
+    global REG_T5
+    global REG_T6
 
-REG_ZR  = 0
-REG_RA  = 1
-REG_SP  = 2
-REG_GP  = 3
-REG_TP  = 4
-REG_T0  = 5
-REG_T1  = 6
-REG_T2  = 7
-REG_S0  = 8
-REG_S1  = 9
-REG_A0  = 10
-REG_A1  = 11
-REG_A2  = 12
-REG_A3  = 13
-REG_A4  = 14
-REG_A5  = 15
-REG_A6  = 16
-REG_A7  = 17
-REG_S2  = 18
-REG_S3  = 19
-REG_S4  = 20
-REG_S5  = 21
-REG_S6  = 22
-REG_S7  = 23
-REG_S8  = 24
-REG_S9  = 25
-REG_S10 = 26
-REG_S11 = 27
-REG_T3  = 28
-REG_T4  = 29
-REG_T5  = 30
-REG_T6  = 31
-
-NID_ZR  = None
-NID_RA  = None
-NID_SP  = None
-NID_GP  = None
-NID_TP  = None
-NID_T0  = None
-NID_T1  = None
-NID_T2  = None
-NID_S0  = None
-NID_S1  = None
-NID_A0  = None
-NID_A1  = None
-NID_A2  = None
-NID_A3  = None
-NID_A4  = None
-NID_A5  = None
-NID_A6  = None
-NID_A7  = None
-NID_S2  = None
-NID_S3  = None
-NID_S4  = None
-NID_S5  = None
-NID_S6  = None
-NID_S7  = None
-NID_S8  = None
-NID_S9  = None
-NID_S10 = None
-NID_S11 = None
-NID_T3  = None
-NID_T4  = None
-NID_T5  = None
-NID_T6  = None
-
-SID_REGISTER_STATE = None
+    REG_ZR  = 0
+    REG_RA  = 1
+    REG_SP  = 2
+    REG_GP  = 3
+    REG_TP  = 4
+    REG_T0  = 5
+    REG_T1  = 6
+    REG_T2  = 7
+    REG_S0  = 8
+    REG_S1  = 9
+    REG_A0  = 10
+    REG_A1  = 11
+    REG_A2  = 12
+    REG_A3  = 13
+    REG_A4  = 14
+    REG_A5  = 15
+    REG_A6  = 16
+    REG_A7  = 17
+    REG_S2  = 18
+    REG_S3  = 19
+    REG_S4  = 20
+    REG_S5  = 21
+    REG_S6  = 22
+    REG_S7  = 23
+    REG_S8  = 24
+    REG_S9  = 25
+    REG_S10 = 26
+    REG_S11 = 27
+    REG_T3  = 28
+    REG_T4  = 29
+    REG_T5  = 30
+    REG_T6  = 31
 
 def init_register_file_sorts():
     global SID_REGISTER_ADDRESS
@@ -1670,6 +2013,8 @@ def init_register_file_sorts():
     global NID_T6
 
     global SID_REGISTER_STATE
+
+    init_register_IDs()
 
     SID_REGISTER_ADDRESS = new_bitvec(5, "5-bit register address")
 
@@ -1735,78 +2080,27 @@ def get_shamt(value_nid):
 
 VIRTUAL_ADDRESS_SPACE = 32 # number of bits in virtual addresses
 
-SID_VIRTUAL_ADDRESS = None
-
-NID_VIRTUAL_ADDRESS_0 = None
-NID_VIRTUAL_ADDRESS_1 = None
-NID_VIRTUAL_ADDRESS_2 = None
-NID_VIRTUAL_ADDRESS_3 = None
-NID_VIRTUAL_ADDRESS_4 = None
-NID_VIRTUAL_ADDRESS_5 = None
-NID_VIRTUAL_ADDRESS_6 = None
-NID_VIRTUAL_ADDRESS_7 = None
-NID_VIRTUAL_ADDRESS_8 = None
-
-NID_VIRTUAL_HALF_WORD_SIZE   = None
-NID_VIRTUAL_SINGLE_WORD_SIZE = None
-NID_VIRTUAL_DOUBLE_WORD_SIZE = None
-
-NID_VIRTUAL_HALF_WORD_SIZE_MINUS_1   = None
-NID_VIRTUAL_SINGLE_WORD_SIZE_MINUS_1 = None
-NID_VIRTUAL_DOUBLE_WORD_SIZE_MINUS_1 = None
-
-NID_HIGHEST_VIRTUAL_ADDRESS = None
-
 # code segment
 
 CODEWORDSIZEINBITS = 32
-
-SID_CODE_WORD = None
-
-NID_CODE_WORD_0 = None
-
-CODE_ADDRESS_SPACE = 0 # number of bits in code segment addresses
-
-SID_CODE_ADDRESS = None
-SID_CODE_STATE   = None
 
 max_code_size = 0
 
 code_start = 0
 code_size  = 0
 
-NID_CODE_START = None
-NID_CODE_END   = None
-
 # main memory
 
 MEMORYWORDSIZEINBITS = 64
 
-SID_MEMORY_WORD = None
-
-NID_MEMORY_WORD_0 = None
-
 # data segment
-
-DATA_ADDRESS_SPACE = 1 # number of bits in data segment addresses
-
-SID_DATA_ADDRESS = None
-SID_DATA_STATE   = None
 
 max_data_size = 0
 
 data_start = 0
 data_size  = 0
 
-NID_DATA_START = None
-NID_DATA_END   = None
-
 # heap segment
-
-HEAP_ADDRESS_SPACE = 1 # number of bits in heap segment addresses
-
-SID_HEAP_ADDRESS = None
-SID_HEAP_STATE   = None
 
 heap_initial_size = 0
 heap_allowance    = 4096 # must be multiple of WORDSIZE
@@ -1814,40 +2108,13 @@ heap_allowance    = 4096 # must be multiple of WORDSIZE
 heap_start = 0
 heap_size  = 0
 
-NID_HEAP_START = None
-NID_HEAP_END   = None
-
 # stack segment
-
-STACK_ADDRESS_SPACE = 1 # number of bits in stack segment addresses
-
-SID_STACK_ADDRESS = None
-SID_STACK_STATE   = None
 
 stack_initial_size = 0
 stack_allowance    = 2048 # must be multiple of WORDSIZE > 0
 
 stack_start = 0
 stack_size  = 0
-
-NID_STACK_START = None
-NID_STACK_END   = None
-
-# bit masks and factors
-
-NID_HALF_WORD_SIZE_MASK   = None
-NID_SINGLE_WORD_SIZE_MASK = None
-NID_DOUBLE_WORD_SIZE_MASK = None
-
-NID_BYTE_MASK        = None
-NID_HALF_WORD_MASK   = None
-NID_SINGLE_WORD_MASK = None
-
-NID_SINGLE_WORD_SIZE_MINUS_HALF_WORD_SIZE   = None
-NID_DOUBLE_WORD_SIZE_MINUS_HALF_WORD_SIZE   = None
-NID_DOUBLE_WORD_SIZE_MINUS_SINGLE_WORD_SIZE = None
-
-NID_BYTE_SIZE_IN_BASE_BITS = None
 
 def init_memory_sorts():
     global VIRTUAL_ADDRESS_SPACE
@@ -1958,6 +2225,8 @@ def init_memory_sorts():
     NID_VIRTUAL_SINGLE_WORD_SIZE_MINUS_1 = NID_VIRTUAL_ADDRESS_3
     NID_VIRTUAL_DOUBLE_WORD_SIZE_MINUS_1 = NID_VIRTUAL_ADDRESS_7
 
+    # code segment
+
     if CODEWORDSIZEINBITS > WORDSIZEINBITS:
         CODEWORDSIZEINBITS = WORDSIZEINBITS
 
@@ -1965,11 +2234,15 @@ def init_memory_sorts():
 
     NID_CODE_WORD_0 = new_constant(OP_CONSTD, SID_CODE_WORD, 0, "code word 0")
 
+    assert max_code_size >= WORDSIZE
+
     CODE_ADDRESS_SPACE = calculate_address_space(max_code_size, eval_bitvec_size(SID_CODE_WORD))
 
     SID_CODE_ADDRESS = new_bitvec(CODE_ADDRESS_SPACE, f"{CODE_ADDRESS_SPACE}-bit code segment address")
 
-    SID_CODE_STATE = new_bitvec(CODE_ADDRESS_SPACE, "code segment state")
+    SID_CODE_STATE = new_array(SID_CODE_ADDRESS, SID_CODE_WORD, "code segment state")
+
+    # main memory
 
     if MEMORYWORDSIZEINBITS > WORDSIZEINBITS:
         MEMORYWORDSIZEINBITS = WORDSIZEINBITS
@@ -1983,21 +2256,27 @@ def init_memory_sorts():
     SID_DATA_ADDRESS = new_bitvec(DATA_ADDRESS_SPACE,
         f"{DATA_ADDRESS_SPACE}-bit physical data segment address")
 
-    SID_DATA_STATE = new_bitvec(DATA_ADDRESS_SPACE, "data segment state")
+    SID_DATA_STATE = new_array(SID_DATA_ADDRESS, SID_MEMORY_WORD, "data segment state")
+
+    # heap segment
 
     HEAP_ADDRESS_SPACE = calculate_address_space(heap_allowance, eval_bitvec_size(SID_MEMORY_WORD))
 
     SID_HEAP_ADDRESS = new_bitvec(HEAP_ADDRESS_SPACE,
         f"{HEAP_ADDRESS_SPACE}-bit physical heap segment address")
 
-    SID_HEAP_STATE = new_bitvec(HEAP_ADDRESS_SPACE, "heap segment state")
+    SID_HEAP_STATE = new_array(SID_HEAP_ADDRESS, SID_MEMORY_WORD, "heap segment state")
+
+    # stack segment
 
     STACK_ADDRESS_SPACE = calculate_address_space(stack_allowance, eval_bitvec_size(SID_MEMORY_WORD))
 
     SID_STACK_ADDRESS = new_bitvec(STACK_ADDRESS_SPACE,
         f"{STACK_ADDRESS_SPACE}-bit physical stack segment address")
 
-    SID_STACK_STATE = new_bitvec(STACK_ADDRESS_SPACE, "stack segment state")
+    SID_STACK_STATE = new_array(SID_STACK_ADDRESS, SID_MEMORY_WORD, "stack segment state");
+
+    # bit masks and factors
 
     NID_HALF_WORD_SIZE_MASK   = NID_VIRTUAL_ADDRESS_1
     NID_SINGLE_WORD_SIZE_MASK = NID_VIRTUAL_ADDRESS_3
@@ -2012,12 +2291,6 @@ def init_memory_sorts():
     NID_DOUBLE_WORD_SIZE_MINUS_SINGLE_WORD_SIZE = NID_VIRTUAL_ADDRESS_4
 
     NID_BYTE_SIZE_IN_BASE_BITS = NID_VIRTUAL_ADDRESS_3
-
-def eval_bitvec_size(line):
-    assert isinstance(line, Bitvector)
-    # TODO: tolerating but not yet supporting double machine word bitvectors
-    assert (line.size > 0 and line.size <= SIZEOFUINT64INBITS) or line.size == 2 * WORDSIZEINBITS
-    return line.size;
 
 def new_segmentation():
     global NID_CODE_START
@@ -2090,877 +2363,877 @@ def new_segmentation():
     else:
         raise system_error(f"end of stack segment wrapped around to 0x{stack_end:X}")
 
-# instructions
+def select_segment_feature(segment_nid, code_nid, data_nid, heap_nid, stack_nid):
+    sid = get_sid(segment_nid)
 
-SID_INSTRUCTION_WORD = None
+    if sid == SID_CODE_STATE:
+        return code_nid
+    elif sid == SID_DATA_STATE:
+        return data_nid
+    elif sid == SID_HEAP_STATE:
+        return heap_nid
+    elif sid == SID_STACK_STATE:
+        return stack_nid
+    else:
+        return UNUSED
 
-NID_INSTRUCTION_WORD_SIZE_MASK = None
+def get_segment_start(segment_nid):
+    return select_segment_feature(segment_nid,
+        NID_CODE_START, NID_DATA_START, NID_HEAP_START, NID_STACK_START)
 
-# RISC-U codes
+def get_segment_end(segment_nid):
+    return select_segment_feature(segment_nid,
+        NID_CODE_END, NID_DATA_END, NID_HEAP_END, NID_STACK_END)
 
-OP_LOAD   = 3   # 0000011, I format (LD,LW)
-OP_IMM    = 19  # 0010011, I format (ADDI, NOP)
-OP_STORE  = 35  # 0100011, S format (SD,SW)
-OP_OP     = 51  # 0110011, R format (ADD, SUB, MUL, DIVU, REMU, SLTU)
-OP_LUI    = 55  # 0110111, U format (LUI)
-OP_BRANCH = 99  # 1100011, B format (BEQ)
-OP_JALR   = 103 # 1100111, I format (JALR)
-OP_JAL    = 111 # 1101111, J format (JAL)
-OP_SYSTEM = 115 # 1110011, I format (ECALL)
+def is_block_in_segment(start_nid, end_nid, segment_nid):
+    start_comparison_nid = new_binary_boolean(OP_UGTE,
+        start_nid,
+        get_segment_start(segment_nid),
+        "virtual address of start of block >= start of segment?")
 
-F3_NOP   = 0 # 000
-F3_ADDI  = 0 # 000
-F3_ADD   = 0 # 000
-F3_SUB   = 0 # 000
-F3_MUL   = 0 # 000
-F3_DIVU  = 5 # 101
-F3_REMU  = 7 # 111
-F3_SLTU  = 3 # 011
-F3_LD    = 3 # 011
-F3_SD    = 3 # 011
-F3_LW    = 2 # 010
-F3_SW    = 2 # 010
-F3_BEQ   = 0 # 000
-F3_JALR  = 0 # 000
-F3_ECALL = 0 # 000
+    if eval_constant_value(get_segment_end(segment_nid)) == 0:
+        # comparing with end of segment is unnecessary since end wrapped around to zero
+        return start_comparison_nid
+    else:
+        # assert: block and segment start <= end
+        return new_binary_boolean(OP_AND,
+            start_comparison_nid,
+            new_binary_boolean(OP_ULT,
+                end_nid,
+                get_segment_end(segment_nid),
+                "virtual address of end of block < end of segment?"),
+            "block in segment?")
 
-F7_ADD  = 0  # 0000000
-F7_MUL  = 1  # 0000001
-F7_SUB  = 32 # 0100000
-F7_DIVU = 1  # 0000001
-F7_REMU = 1  # 0000001
-F7_SLTU = 0  # 0000000
+def is_virtual_address_in_segment(vaddr_nid, segment_nid):
+    return is_block_in_segment(vaddr_nid, vaddr_nid, segment_nid)
 
-F12_ECALL = 0 # 000000000000
+def vaddr_to_laddr(vaddr_nid, segment_nid):
+    # TODO: distinguish linear addresses from virtual addresses
+    return new_binary(OP_SUB, SID_VIRTUAL_ADDRESS,
+        vaddr_nid, get_segment_start(segment_nid),
+        "map virtual address to linear address in segment")
 
-SID_OPCODE = None
+def store_if_in_segment(vaddr_nid, store_nid, segment_nid):
+    return new_ternary(OP_ITE, get_sid(segment_nid),
+        is_virtual_address_in_segment(vaddr_nid, segment_nid),
+        store_nid,
+        segment_nid,
+        "store at virtual address if in segment")
 
-NID_OP_LOAD   = None
-NID_OP_IMM    = None
-NID_OP_STORE  = None
-NID_OP_OP     = None
-NID_OP_LUI    = None
-NID_OP_BRANCH = None
-NID_OP_JALR   = None
-NID_OP_JAL    = None
-NID_OP_SYSTEM = None
+# instruction codes
 
-SID_FUNCT3 = None
+def init_instruction_codes():
+    global OP_LOAD
+    global OP_IMM
+    global OP_STORE
+    global OP_OP
+    global OP_LUI
+    global OP_BRANCH
+    global OP_JALR
+    global OP_JAL
+    global OP_SYSTEM
 
-NID_F3_NOP         = None
-NID_F3_ADDI        = None
-NID_F3_ADD_SUB_MUL = None
-NID_F3_DIVU        = None
-NID_F3_REMU        = None
-NID_F3_SLTU        = None
-NID_F3_LD          = None
-NID_F3_SD          = None
-NID_F3_LW          = None
-NID_F3_SW          = None
-NID_F3_BEQ         = None
-NID_F3_JALR        = None
-NID_F3_ECALL       = None
+    global F3_NOP
+    global F3_ADDI
+    global F3_ADD
+    global F3_SUB
+    global F3_MUL
+    global F3_DIVU
+    global F3_REMU
+    global F3_SLTU
+    global F3_LD
+    global F3_SD
+    global F3_LW
+    global F3_SW
+    global F3_BEQ
+    global F3_JALR
+    global F3_ECALL
 
-SID_FUNCT7 = None
+    global F7_ADD
+    global F7_MUL
+    global F7_SUB
+    global F7_DIVU
+    global F7_REMU
+    global F7_SLTU
 
-NID_F7_ADD  = None
-NID_F7_MUL  = None
-NID_F7_SUB  = None
-NID_F7_DIVU = None
-NID_F7_REMU = None
-NID_F7_SLTU = None
+    global F12_ECALL
 
-NID_F7_MUL_DIV_REM = None
+    global OP_AUIPC
 
-SID_FUNCT12 = None
+    global F3_BNE
+    global F3_BLT
+    global F3_BGE
+    global F3_BLTU
+    global F3_BGEU
 
-NID_F12_ECALL = None
+    global F3_LB
+    global F3_LH
+    global F3_LBU
+    global F3_LHU
 
-NID_ECALL_I = None
+    global F3_SB
+    global F3_SH
 
-# immediate sorts
+    global F3_SLL
+    global F3_SLT
+    global F3_XOR
+    global F3_SRL
+    global F3_SRA
+    global F3_OR
+    global F3_AND
 
-SID_1_BIT_IMM  = None
-SID_4_BIT_IMM  = None
-SID_5_BIT_IMM  = None
-SID_6_BIT_IMM  = None
-SID_8_BIT_IMM  = None
-SID_10_BIT_IMM = None
-SID_11_BIT_IMM = None
-SID_12_BIT_IMM = None
-SID_13_BIT_IMM = None
-SID_20_BIT_IMM = None
-SID_21_BIT_IMM = None
-SID_32_BIT_IMM = None
+    global F6_SLL_SRL
+    global F6_SRA
 
-NID_1_BIT_IMM_0  = None
-NID_12_BIT_IMM_0 = None
+    global OP_IMM_32
+    global OP_OP_32
 
-# RISC-U instruction switches
+    global F3_LWU
+
+    global F3_MULH
+    global F3_MULHSU
+    global F3_MULHU
+    global F3_DIV
+    global F3_REM
+
+    # RISC-U codes
+
+    OP_LOAD   = 3   # 0000011, I format (LD,LW)
+    OP_IMM    = 19  # 0010011, I format (ADDI, NOP)
+    OP_STORE  = 35  # 0100011, S format (SD,SW)
+    OP_OP     = 51  # 0110011, R format (ADD, SUB, MUL, DIVU, REMU, SLTU)
+    OP_LUI    = 55  # 0110111, U format (LUI)
+    OP_BRANCH = 99  # 1100011, B format (BEQ)
+    OP_JALR   = 103 # 1100111, I format (JALR)
+    OP_JAL    = 111 # 1101111, J format (JAL)
+    OP_SYSTEM = 115 # 1110011, I format (ECALL)
+
+    F3_NOP   = 0 # 000
+    F3_ADDI  = 0 # 000
+    F3_ADD   = 0 # 000
+    F3_SUB   = 0 # 000
+    F3_MUL   = 0 # 000
+    F3_DIVU  = 5 # 101
+    F3_REMU  = 7 # 111
+    F3_SLTU  = 3 # 011
+    F3_LD    = 3 # 011
+    F3_SD    = 3 # 011
+    F3_LW    = 2 # 010
+    F3_SW    = 2 # 010
+    F3_BEQ   = 0 # 000
+    F3_JALR  = 0 # 000
+    F3_ECALL = 0 # 000
+
+    F7_ADD  = 0  # 0000000
+    F7_MUL  = 1  # 0000001
+    F7_SUB  = 32 # 0100000
+    F7_DIVU = 1  # 0000001
+    F7_REMU = 1  # 0000001
+    F7_SLTU = 0  # 0000000
+
+    F12_ECALL = 0 # 000000000000
+
+    # RV32I codes missing in RISC-U
+
+    OP_AUIPC = 23 # 0010111, U format (AUIPC)
+
+    F3_BNE  = 1 # 001
+    F3_BLT  = 4 # 100
+    F3_BGE  = 5 # 101
+    F3_BLTU = 6 # 110
+    F3_BGEU = 7 # 111
+
+    F3_LB  = 0 # 000
+    F3_LH  = 1 # 001
+    F3_LBU = 4 # 100
+    F3_LHU = 5 # 101
+
+    F3_SB = 0 # 000
+    F3_SH = 1 # 001
+
+    F3_SLL = 1 # 001
+    F3_SLT = 2 # 010
+    F3_XOR = 4 # 100
+    F3_SRL = 5 # 101
+    F3_SRA = 5 # 101
+    F3_OR  = 6 # 110
+    F3_AND = 7 # 111
+
+    # RV64I codes missing in RISC-U
+
+    F6_SLL_SRL = 0  # 000000
+    F6_SRA     = 16 # 010000
+
+    OP_IMM_32 = 27 # 0011011, I format
+    OP_OP_32  = 59 # 0111011, I format
+
+    F3_LWU = 6 # 110
+
+    # RV32M codes missing in RISC-U
+
+    F3_MULH   = 1 # 001
+    F3_MULHSU = 2 # 010
+    F3_MULHU  = 3 # 011
+    F3_DIV    = 4 # 100
+    F3_REM    = 6 # 110
 
 RISCUONLY = False # restrict modeling to RISC-U only
 
-SID_INSTRUCTION_ID = None
-
-NID_DISABLED = None
-
-NID_LUI  = None
-NID_ADDI = None
-
-NID_ADD  = None
-NID_SUB  = None
-NID_MUL  = None
-NID_DIVU = None
-NID_REMU = None
-NID_SLTU = None
-
-NID_LD = None
-NID_SD = None
-NID_LW = None
-NID_SW = None
-
-NID_BEQ  = None
-NID_JAL  = None
-NID_JALR = None
-
-NID_ECALL = None
-
-# RV32I codes missing in RISC-U
-
-OP_AUIPC = 23 # 0010111, U format (AUIPC)
-
-F3_BNE  = 1 # 001
-F3_BLT  = 4 # 100
-F3_BGE  = 5 # 101
-F3_BLTU = 6 # 110
-F3_BGEU = 7 # 111
-
-F3_LB  = 0 # 000
-F3_LH  = 1 # 001
-F3_LBU = 4 # 100
-F3_LHU = 5 # 101
-
-F3_SB = 0 # 000
-F3_SH = 1 # 001
-
-F3_SLL = 1 # 001
-F3_SLT = 2 # 010
-F3_XOR = 4 # 100
-F3_SRL = 5 # 101
-F3_SRA = 5 # 101
-F3_OR  = 6 # 110
-F3_AND = 7 # 111
-
-NID_OP_AUIPC = None
-
-NID_F3_BNE  = None
-NID_F3_BLT  = None
-NID_F3_BGE  = None
-NID_F3_BLTU = None
-NID_F3_BGEU = None
-
-NID_F3_LB  = None
-NID_F3_LH  = None
-NID_F3_LBU = None
-NID_F3_LHU = None
-
-NID_F3_SB = None
-NID_F3_SH = None
-
-NID_F3_SLL = None
-NID_F3_SLT = None
-NID_F3_XOR = None
-NID_F3_SRL = None
-NID_F3_SRA = None
-NID_F3_OR  = None
-NID_F3_AND = None
-
-NID_F7_ADD_SLT_XOR_OR_AND_SLL_SRL = None
-NID_F7_SUB_SRA                    = None
-
-NID_F7_SLL_SRL_ILLEGAL = None
-NID_F7_SRA_ILLEGAL     = None
-
-# RV32I instruction switches
-
-NID_AUIPC = None
-
-NID_BNE  = None
-NID_BLT  = None
-NID_BGE  = None
-NID_BLTU = None
-NID_BGEU = None
-
-NID_LB  = None
-NID_LH  = None
-NID_LBU = None
-NID_LHU = None
-
-NID_SB = None
-NID_SH = None
-
-NID_SLTI  = None
-NID_SLTIU = None
-NID_XORI  = None
-NID_ORI   = None
-NID_ANDI  = None
-
-NID_SLLI = None
-NID_SRLI = None
-NID_SRAI = None
-
-NID_SLL = None
-NID_SLT = None
-NID_XOR = None
-NID_SRL = None
-NID_SRA = None
-
-NID_OR  = None
-NID_AND = None
-
-# RV64I codes missing in RISC-U
-
-SID_FUNCT6 = None
-
-F6_SLL_SRL = 0  # 000000
-F6_SRA     = 16 # 010000
-
-NID_F6_SLL_SRL = None
-NID_F6_SRA     = None
-
-OP_IMM_32 = 27 # 0011011, I format
-OP_OP_32  = 59 # 0111011, I format
-
-F3_LWU = 6 # 110
-
-NID_OP_IMM_32 = None
-NID_OP_OP_32  = None
-
-NID_F3_LWU = None
-
-# RV64I instruction switches
-
-NID_LWU = None
-
-NID_ADDIW = None
-NID_SLLIW = None
-NID_SRLIW = None
-NID_SRAIW = None
-
-NID_ADDW = None
-NID_SUBW = None
-NID_SLLW = None
-NID_SRLW = None
-NID_SRAW = None
-
-# RV32M codes missing in RISC-U
-
-F3_MULH   = 1 # 001
-F3_MULHSU = 2 # 010
-F3_MULHU  = 3 # 011
-F3_DIV    = 4 # 100
-F3_REM    = 6 # 110
-
-NID_F3_MULH   = None
-NID_F3_MULHSU = None
-NID_F3_MULHU  = None
-NID_F3_DIV    = None
-NID_F3_REM    = None
-
-# RV32M instruction switches
-
 RV32M = True # RV32M support
-
-NID_MULH   = None
-NID_MULHSU = None
-NID_MULHU  = None
-NID_DIV    = None
-NID_REM    = None
-
-# RV64M instruction switches
-
 RV64M = True # RV64M support
 
-NID_MULW  = None
-NID_DIVW  = None
-NID_DIVUW = None
-NID_REMW  = None
-NID_REMUW = None
+# compressed instruction codes
 
-# RVC codes
+def init_compressed_instruction_codes():
+    global F3_C_LI
+    global F3_C_LUI_ADDI16SP
 
-SID_OPCODE_C = None
+    global F3_C_ADDI
+    global F3_C_ADDIW_JAL
 
-NID_OP_C0 = None
-NID_OP_C1 = None
-NID_OP_C2 = None
-NID_OP_C3 = None
+    global F3_C_ADDI4SPN
 
-F3_C_LI           = 2 # 010
-F3_C_LUI_ADDI16SP = 3 # 011
+    global F3_C_SLLI
+    global F3_C_SRLI_SRAI_ANDI
 
-NID_F3_C_LI           = None
-NID_F3_C_LUI_ADDI16SP = None
+    global F2_C_SRLI
+    global F2_C_SRAI
+    global F2_C_ANDI
 
-F3_C_ADDI      = 0 # 000
-F3_C_ADDIW_JAL = 1 # 001
+    global F6_C_SUB_XOR_OR_AND
+    global F6_C_ADDW_SUBW
 
-NID_F3_C_ADDI      = None
-NID_F3_C_ADDIW_JAL = None
+    global F2_C_SUB_SUBW
+    global F2_C_XOR_ADDW
+    global F2_C_OR
+    global F2_C_AND
 
-F3_C_ADDI4SPN = 0 # 000
+    global F3_C_LWSP_LW
+    global F3_C_LDSP_LD
 
-NID_F3_C_ADDI4SPN = None
+    global F3_C_SWSP_SW
+    global F3_C_SDSP_SD
 
-F3_C_SLLI           = 0 # 000
-F3_C_SRLI_SRAI_ANDI = 4 # 100
+    global F3_C_BEQZ
+    global F3_C_BNEZ
 
-NID_F3_C_SLLI           = None
-NID_F3_C_SRLI_SRAI_ANDI = None
+    global F3_C_J
 
-SID_FUNCT2 = None
+    global F4_C_MV_JR
+    global F4_C_ADD_JALR
 
-F2_C_SRLI = 0 # 00
-F2_C_SRAI = 1 # 01
-F2_C_ANDI = 2 # 10
+    # RVC codes
 
-NID_F2_C_SRLI = None
-NID_F2_C_SRAI = None
-NID_F2_C_ANDI = None
+    F3_C_LI           = 2 # 010
+    F3_C_LUI_ADDI16SP = 3 # 011
 
-F6_C_SUB_XOR_OR_AND = 35 # 100011
-F6_C_ADDW_SUBW      = 39 # 100111
+    F3_C_ADDI      = 0 # 000
+    F3_C_ADDIW_JAL = 1 # 001
 
-NID_F6_C_SUB_XOR_OR_AND = None
-NID_F6_C_ADDW_SUBW      = None
+    F3_C_ADDI4SPN = 0 # 000
 
-F2_C_SUB_SUBW = 0 # 00
-F2_C_XOR_ADDW = 1 # 01
-F2_C_OR       = 2 # 10
-F2_C_AND      = 3 # 11
+    F3_C_SLLI           = 0 # 000
+    F3_C_SRLI_SRAI_ANDI = 4 # 100
 
-NID_F2_C_SUB_SUBW = None
-NID_F2_C_XOR_ADDW = None
-NID_F2_C_OR       = None
-NID_F2_C_AND      = None
+    F2_C_SRLI = 0 # 00
+    F2_C_SRAI = 1 # 01
+    F2_C_ANDI = 2 # 10
 
-F3_C_LWSP_LW = 2 # 010
-F3_C_LDSP_LD = 3 # 011
+    F6_C_SUB_XOR_OR_AND = 35 # 100011
+    F6_C_ADDW_SUBW      = 39 # 100111
 
-NID_F3_C_LWSP_LW = None
-NID_F3_C_LDSP_LD = None
+    F2_C_SUB_SUBW = 0 # 00
+    F2_C_XOR_ADDW = 1 # 01
+    F2_C_OR       = 2 # 10
+    F2_C_AND      = 3 # 11
 
-F3_C_SWSP_SW = 6 # 110
-F3_C_SDSP_SD = 7 # 111
+    F3_C_LWSP_LW = 2 # 010
+    F3_C_LDSP_LD = 3 # 011
 
-NID_F3_C_SWSP_SW = None
-NID_F3_C_SDSP_SD = None
+    F3_C_SWSP_SW = 6 # 110
+    F3_C_SDSP_SD = 7 # 111
 
-F3_C_BEQZ = 6 # 110
-F3_C_BNEZ = 7 # 111
+    F3_C_BEQZ = 6 # 110
+    F3_C_BNEZ = 7 # 111
 
-NID_F3_C_BEQZ = None
-NID_F3_C_BNEZ = None
+    F3_C_J = 5 # 101
 
-F3_C_J = 5 # 101
-
-NID_F3_C_J = None
-
-SID_FUNCT4 = None
-
-F4_C_MV_JR    = 8 # 1000
-F4_C_ADD_JALR = 9 # 1001
-
-NID_F4_C_MV_JR    = None
-NID_F4_C_ADD_JALR = None
-
-# offset sorts
-
-SID_1_BIT_OFFSET  = None
-SID_2_BIT_OFFSET  = None
-SID_3_BIT_OFFSET  = None
-SID_4_BIT_OFFSET  = None
-SID_5_BIT_OFFSET  = None
-SID_6_BIT_OFFSET  = None
-SID_7_BIT_OFFSET  = None
-SID_8_BIT_OFFSET  = None
-SID_9_BIT_OFFSET  = None
-SID_10_BIT_OFFSET = None
-SID_11_BIT_OFFSET = None
-SID_12_BIT_OFFSET = None
-SID_17_BIT_OFFSET = None
-SID_18_BIT_OFFSET = None
-
-NID_1_BIT_OFFSET_0  = None
-NID_1_BIT_OFFSET_1  = None
-NID_2_BIT_OFFSET_0  = None
-NID_2_BIT_OFFSET_1  = None
-NID_3_BIT_OFFSET_0  = None
-NID_4_BIT_OFFSET_0  = None
-NID_12_BIT_OFFSET_0 = None
-
-SID_COMPRESSED_REGISTER_ADDRESS = None
-
-# RVC instruction switches
+    F4_C_MV_JR    = 8 # 1000
+    F4_C_ADD_JALR = 9 # 1001
 
 RVC = True # RVC support
 
-NID_C_LI  = None
-NID_C_LUI = None
-
-NID_C_ADDI     = None
-NID_C_ADDIW    = None
-NID_C_ADDI16SP = None
-
-NID_C_ADDI4SPN = None
-
-NID_C_ANDI = None
-
-NID_C_SLLI = None
-NID_C_SRLI = None
-NID_C_SRAI = None
-
-NID_C_MV   = None
-NID_C_ADD  = None
-
-NID_C_SUB  = None
-NID_C_XOR  = None
-NID_C_OR   = None
-NID_C_AND  = None
-
-NID_C_ADDW = None
-NID_C_SUBW = None
-
-NID_C_LWSP = None
-NID_C_LW   = None
-
-NID_C_LDSP = None
-NID_C_LD   = None
-
-NID_C_SWSP = None
-NID_C_SW   = None
-
-NID_C_SDSP = None
-NID_C_SD   = None
-
-NID_C_BEQZ = None
-NID_C_BNEZ = None
-
-NID_C_J   = None
-NID_C_JAL = None
-
-NID_C_JR   = None
-NID_C_JALR = None
-
 # instruction IDs
 
-ID_UNKNOWN = 0
+def init_instruction_IDs():
+    global ID_UNKNOWN
 
-ID_ECALL = 1
+    global ID_ECALL
 
-# R-type
+    global ID_ADD
+    global ID_SUB
+    global ID_SLL
+    global ID_SLT
+    global ID_SLTU
+    global ID_XOR
+    global ID_SRL
+    global ID_SRA
+    global ID_OR
+    global ID_AND
 
-ID_ADD  = 2
-ID_SUB  = 3
-ID_SLL  = 4
-ID_SLT  = 5
-ID_SLTU = 6
-ID_XOR  = 7
-ID_SRL  = 8
-ID_SRA  = 9
-ID_OR   = 10
-ID_AND  = 11
+    global ID_ADDW
+    global ID_SUBW
+    global ID_SLLW
+    global ID_SRLW
+    global ID_SRAW
 
-ID_ADDW = 12
-ID_SUBW = 13
-ID_SLLW = 14
-ID_SRLW = 15
-ID_SRAW = 16
+    global ID_MUL
+    global ID_MULH
+    global ID_MULHSU
+    global ID_MULHU
+    global ID_DIV
+    global ID_DIVU
+    global ID_REM
+    global ID_REMU
 
-ID_MUL    = 17
-ID_MULH   = 18
-ID_MULHSU = 19
-ID_MULHU  = 20
-ID_DIV    = 21
-ID_DIVU   = 22
-ID_REM    = 23
-ID_REMU   = 24
+    global ID_MULW
+    global ID_DIVW
+    global ID_DIVUW
+    global ID_REMW
+    global ID_REMUW
 
-ID_MULW  = 25
-ID_DIVW  = 26
-ID_DIVUW = 27
-ID_REMW  = 28
-ID_REMUW = 29
+    global ID_JALR
 
-# I-type
+    global ID_LB
+    global ID_LH
+    global ID_LW
+    global ID_LBU
+    global ID_LHU
+    global ID_LWU
+    global ID_LD
 
-ID_JALR = 30
+    global ID_ADDI
+    global ID_SLTI
+    global ID_SLTIU
+    global ID_XORI
+    global ID_ORI
+    global ID_ANDI
 
-ID_LB  = 31
-ID_LH  = 32
-ID_LW  = 33
-ID_LBU = 34
-ID_LHU = 35
-ID_LWU = 36
-ID_LD  = 37
+    global ID_ADDIW
 
-ID_ADDI  = 38
-ID_SLTI  = 39
-ID_SLTIU = 40
-ID_XORI  = 41
-ID_ORI   = 42
-ID_ANDI  = 43
+    global ID_SLLI
+    global ID_SRLI
+    global ID_SRAI
 
-ID_ADDIW = 44
+    global ID_SLLIW
+    global ID_SRLIW
+    global ID_SRAIW
 
-ID_SLLI = 45
-ID_SRLI = 46
-ID_SRAI = 47
+    global ID_SB
+    global ID_SH
+    global ID_SW
+    global ID_SD
 
-ID_SLLIW = 48
-ID_SRLIW = 49
-ID_SRAIW = 50
+    global ID_BEQ
+    global ID_BNE
+    global ID_BLT
+    global ID_BGE
+    global ID_BLTU
+    global ID_BGEU
 
-# S-type
+    global ID_LUI
+    global ID_AUIPC
 
-ID_SB = 51
-ID_SH = 52
-ID_SW = 53
-ID_SD = 54
+    global ID_JAL
 
-# SB-type
+    global ID_C_MV
+    global ID_C_ADD
 
-ID_BEQ  = 55
-ID_BNE  = 56
-ID_BLT  = 57
-ID_BGE  = 58
-ID_BLTU = 59
-ID_BGEU = 60
+    global ID_C_JR
+    global ID_C_JALR
 
-# U-type
+    global ID_C_LI
+    global ID_C_LUI
 
-ID_LUI   = 61
-ID_AUIPC = 62
+    global ID_C_ADDI
+    global ID_C_ADDIW
+    global ID_C_ADDI16SP
 
-# UJ-type
+    global ID_C_ADDI4SPN
 
-ID_JAL = 63
+    global ID_C_SLLI
 
-# compressed instruction IDs
+    global ID_C_LWSP
+    global ID_C_LDSP
 
-# CR-type
+    global ID_C_LW
+    global ID_C_LD
 
-ID_C_MV  = 64
-ID_C_ADD = 65
+    global ID_C_SW
+    global ID_C_SD
 
-ID_C_JR   = 66
-ID_C_JALR = 67
+    global ID_C_SUB
+    global ID_C_XOR
+    global ID_C_OR
+    global ID_C_AND
 
-# CI-type
+    global ID_C_ADDW
+    global ID_C_SUBW
 
-ID_C_LI  = 68
-ID_C_LUI = 69
+    global ID_C_SWSP
+    global ID_C_SDSP
 
-ID_C_ADDI     = 70
-ID_C_ADDIW    = 71
-ID_C_ADDI16SP = 72
+    global ID_C_BEQZ
+    global ID_C_BNEZ
 
-# CIW-type
+    global ID_C_ANDI
 
-ID_C_ADDI4SPN = 73
+    global ID_C_SRLI
+    global ID_C_SRAI
 
-# CI-type
+    global ID_C_J
+    global ID_C_JAL
 
-ID_C_SLLI = 74
+    global ID_P_NOP
+    global ID_P_RET
 
-ID_C_LWSP = 75
-ID_C_LDSP = 76
+    global ID_P_LI
 
-# CL-type
+    global ID_P_MV
+    global ID_P_NOT
+    global ID_P_SEXT_W
+    global ID_P_SEQZ
+    global ID_P_SLTZ
+    global ID_P_ZEXT_B
+    global ID_P_NEG
+    global ID_P_NEGW
+    global ID_P_SNEZ
+    global ID_P_SGTZ
 
-ID_C_LW = 77
-ID_C_LD = 78
+    global ID_P_BEQZ
+    global ID_P_BNEZ
+    global ID_P_BGEZ
+    global ID_P_BLTZ
+    global ID_P_BLEZ
+    global ID_P_BGTZ
 
-# CS-type
+    global ID_P_J
+    global ID_P_JAL
 
-ID_C_SW = 79
-ID_C_SD = 80
+    global ID_P_JR
+    global ID_P_JALR
 
-ID_C_SUB = 81
-ID_C_XOR = 82
-ID_C_OR  = 83
-ID_C_AND = 84
+    global RISC_V_MNEMONICS
 
-ID_C_ADDW = 85
-ID_C_SUBW = 86
+    ID_UNKNOWN = 0
 
-# CSS-type
-
-ID_C_SWSP = 87
-ID_C_SDSP = 88
-
-# CB-type
-
-ID_C_BEQZ = 89
-ID_C_BNEZ = 90
-
-ID_C_ANDI = 91
-
-ID_C_SRLI = 92
-ID_C_SRAI = 93
-
-# CJ-type
-
-ID_C_J   = 94
-ID_C_JAL = 95
-
-# pseudoinstruction IDs
-
-# No operands
-
-ID_P_NOP = 96
-ID_P_RET = 97
-
-# rd,I_imm
-
-ID_P_LI = 98
-
-# rd,rsx
-
-ID_P_MV     = 99  # rs1 or rs2
-ID_P_NOT    = 100 # rs1
-ID_P_SEXT_W = 101 # rs1
-ID_P_SEQZ   = 102 # rs1
-ID_P_SLTZ   = 103 # rs1
-ID_P_ZEXT_B = 104 # rs1
-ID_P_NEG    = 105 # rs2
-ID_P_NEGW   = 106 # rs2
-ID_P_SNEZ   = 107 # rs2
-ID_P_SGTZ   = 108 # rs2
-
-# branch type (rsx,pc+SB_imm <SB_imm>)
-
-ID_P_BEQZ = 109 # rs1
-ID_P_BNEZ = 110 # rs1
-ID_P_BGEZ = 111 # rs1
-ID_P_BLTZ = 112 # rs1
-ID_P_BLEZ = 113 # rs2
-ID_P_BGTZ = 114 # rs2
-
-# jump type (pc + UJ_imm <UJ_imm>)
-
-ID_P_J   = 115
-ID_P_JAL = 116
-
-# jump register type (immx(rs1))
-
-ID_P_JR   = 117 # I_imm or 0
-ID_P_JALR = 118 # I_imm or 0
-
-RISC_V_MNEMONICS = {
-    ID_UNKNOWN: "unknown RISC-V instruction",
-
-    ID_ECALL: 'ecall',
+    ID_ECALL = 1
 
     # R-type
 
-    ID_ADD:  'add',
-    ID_SUB:  'sub',
-    ID_SLL:  'sll',
-    ID_SLT:  'slt',
-    ID_SLTU: 'sltu',
-    ID_XOR:  'xor',
-    ID_SRL:  'srl',
-    ID_SRA:  'sra',
-    ID_OR:   'or',
-    ID_AND:  'and',
+    ID_ADD  = 2
+    ID_SUB  = 3
+    ID_SLL  = 4
+    ID_SLT  = 5
+    ID_SLTU = 6
+    ID_XOR  = 7
+    ID_SRL  = 8
+    ID_SRA  = 9
+    ID_OR   = 10
+    ID_AND  = 11
 
-    ID_ADDW: 'addw',
-    ID_SUBW: 'subw',
-    ID_SLLW: 'sllw',
-    ID_SRLW: 'srlw',
-    ID_SRAW: 'sraw',
+    ID_ADDW = 12
+    ID_SUBW = 13
+    ID_SLLW = 14
+    ID_SRLW = 15
+    ID_SRAW = 16
 
-    ID_MUL:    'mul',
-    ID_MULH:   'mulh',
-    ID_MULHSU: 'mulhsu',
-    ID_MULHU:  'mulhu',
-    ID_DIV:    'div',
-    ID_DIVU:   'divu',
-    ID_REM:    'rem',
-    ID_REMU:   'remu',
+    ID_MUL    = 17
+    ID_MULH   = 18
+    ID_MULHSU = 19
+    ID_MULHU  = 20
+    ID_DIV    = 21
+    ID_DIVU   = 22
+    ID_REM    = 23
+    ID_REMU   = 24
 
-    ID_MULW:  'mulw',
-    ID_DIVW:  'divw',
-    ID_DIVUW: 'divuw',
-    ID_REMW:  'remw',
-    ID_REMUW: 'remuw',
+    ID_MULW  = 25
+    ID_DIVW  = 26
+    ID_DIVUW = 27
+    ID_REMW  = 28
+    ID_REMUW = 29
 
     # I-type
 
-    ID_JALR: 'jalr',
+    ID_JALR = 30
 
-    ID_LB:  'lb',
-    ID_LH:  'lh',
-    ID_LW:  'lw',
-    ID_LBU: 'lbu',
-    ID_LHU: 'lhu',
-    ID_LWU: 'lwu',
-    ID_LD:  'ld',
+    ID_LB  = 31
+    ID_LH  = 32
+    ID_LW  = 33
+    ID_LBU = 34
+    ID_LHU = 35
+    ID_LWU = 36
+    ID_LD  = 37
 
-    ID_ADDI:  'addi',
-    ID_SLTI:  'slti',
-    ID_SLTIU: 'sltiu',
-    ID_XORI:  'xori',
-    ID_ORI:   'ori',
-    ID_ANDI:  'andi',
+    ID_ADDI  = 38
+    ID_SLTI  = 39
+    ID_SLTIU = 40
+    ID_XORI  = 41
+    ID_ORI   = 42
+    ID_ANDI  = 43
 
-    ID_ADDIW: 'addiw',
+    ID_ADDIW = 44
 
-    ID_SLLI: 'slli',
-    ID_SRLI: 'srli',
-    ID_SRAI: 'srai',
+    ID_SLLI = 45
+    ID_SRLI = 46
+    ID_SRAI = 47
 
-    ID_SLLIW: 'slliw',
-    ID_SRLIW: 'srliw',
-    ID_SRAIW: 'sraiw',
+    ID_SLLIW = 48
+    ID_SRLIW = 49
+    ID_SRAIW = 50
 
     # S-type
 
-    ID_SB: 'sb',
-    ID_SH: 'sh',
-    ID_SW: 'sw',
-    ID_SD: 'sd',
+    ID_SB = 51
+    ID_SH = 52
+    ID_SW = 53
+    ID_SD = 54
 
     # SB-type
 
-    ID_BEQ:  'beq',
-    ID_BNE:  'bne',
-    ID_BLT:  'blt',
-    ID_BGE:  'bge',
-    ID_BLTU: 'bltu',
-    ID_BGEU: 'bgeu',
+    ID_BEQ  = 55
+    ID_BNE  = 56
+    ID_BLT  = 57
+    ID_BGE  = 58
+    ID_BLTU = 59
+    ID_BGEU = 60
 
     # U-type
 
-    ID_LUI:   'lui',
-    ID_AUIPC: 'auipc',
+    ID_LUI   = 61
+    ID_AUIPC = 62
 
     # UJ-type
 
-    ID_JAL: 'jal',
+    ID_JAL = 63
 
     # compressed instruction IDs
 
     # CR-type
 
-    ID_C_MV:  'c.mv',
-    ID_C_ADD: 'c.add',
+    ID_C_MV  = 64
+    ID_C_ADD = 65
 
-    ID_C_JR:   'c.jr',
-    ID_C_JALR: 'c.jalr',
+    ID_C_JR   = 66
+    ID_C_JALR = 67
 
     # CI-type
 
-    ID_C_LI:  'c.li',
-    ID_C_LUI: 'c.lui',
+    ID_C_LI  = 68
+    ID_C_LUI = 69
 
-    ID_C_ADDI:     'c.addi',
-    ID_C_ADDIW:    'c.addiw',
-    ID_C_ADDI16SP: 'c.addi16sp',
+    ID_C_ADDI     = 70
+    ID_C_ADDIW    = 71
+    ID_C_ADDI16SP = 72
 
     # CIW-type
 
-    ID_C_ADDI4SPN: 'c.addi4spn',
+    ID_C_ADDI4SPN = 73
 
     # CI-type
 
-    ID_C_SLLI: 'c.slli',
+    ID_C_SLLI = 74
 
-    ID_C_LWSP: 'c.lwsp',
-    ID_C_LDSP: 'c.ldsp',
+    ID_C_LWSP = 75
+    ID_C_LDSP = 76
 
     # CL-type
 
-    ID_C_LW: 'c.lw',
-    ID_C_LD: 'c.ld',
+    ID_C_LW = 77
+    ID_C_LD = 78
 
     # CS-type
 
-    ID_C_SW: 'c.sw',
-    ID_C_SD: 'c.sd',
+    ID_C_SW = 79
+    ID_C_SD = 80
 
-    ID_C_SUB: 'c.sub',
-    ID_C_XOR: 'c.xor',
-    ID_C_OR:  'c.or',
-    ID_C_AND: 'c.and',
+    ID_C_SUB = 81
+    ID_C_XOR = 82
+    ID_C_OR  = 83
+    ID_C_AND = 84
 
-    ID_C_ADDW: 'c.addw',
-    ID_C_SUBW: 'c.subw',
+    ID_C_ADDW = 85
+    ID_C_SUBW = 86
 
     # CSS-type
 
-    ID_C_SWSP: 'c.swsp',
-    ID_C_SDSP: 'c.sdsp',
+    ID_C_SWSP = 87
+    ID_C_SDSP = 88
 
     # CB-type
 
-    ID_C_BEQZ: 'c.beqz',
-    ID_C_BNEZ: 'c.bnez',
+    ID_C_BEQZ = 89
+    ID_C_BNEZ = 90
 
-    ID_C_ANDI: 'c.andi',
+    ID_C_ANDI = 91
 
-    ID_C_SRLI: 'c.srli',
-    ID_C_SRAI: 'c.srai',
+    ID_C_SRLI = 92
+    ID_C_SRAI = 93
 
     # CJ-type
 
-    ID_C_J:   'c.j',
-    ID_C_JAL: 'c.jal',
+    ID_C_J   = 94
+    ID_C_JAL = 95
 
     # pseudoinstruction IDs
 
     # No operands
 
-    ID_P_NOP: 'nop',
-    ID_P_RET: 'ret',
+    ID_P_NOP = 96
+    ID_P_RET = 97
 
     # rd,I_imm
 
-    ID_P_LI: 'li',
+    ID_P_LI = 98
 
     # rd,rsx
 
-    ID_P_MV:     'mv',
-    ID_P_NOT:    'not',
-    ID_P_SEXT_W: 'sext.w',
-    ID_P_SEQZ:   'seqz',
-    ID_P_SLTZ:   'sltz',
-    ID_P_ZEXT_B: 'zext.b',
-    ID_P_NEG:    'neg',
-    ID_P_NEGW:   'negw',
-    ID_P_SNEZ:   'snez',
-    ID_P_SGTZ:   'sgtz',
+    ID_P_MV     = 99  # rs1 or rs2
+    ID_P_NOT    = 100 # rs1
+    ID_P_SEXT_W = 101 # rs1
+    ID_P_SEQZ   = 102 # rs1
+    ID_P_SLTZ   = 103 # rs1
+    ID_P_ZEXT_B = 104 # rs1
+    ID_P_NEG    = 105 # rs2
+    ID_P_NEGW   = 106 # rs2
+    ID_P_SNEZ   = 107 # rs2
+    ID_P_SGTZ   = 108 # rs2
 
     # branch type (rsx,pc+SB_imm <SB_imm>)
 
-    ID_P_BEQZ: 'beqz',
-    ID_P_BNEZ: 'bnez',
-    ID_P_BGEZ: 'bgez',
-    ID_P_BLTZ: 'bltz',
-    ID_P_BLEZ: 'blez',
-    ID_P_BGTZ: 'bgtz',
+    ID_P_BEQZ = 109 # rs1
+    ID_P_BNEZ = 110 # rs1
+    ID_P_BGEZ = 111 # rs1
+    ID_P_BLTZ = 112 # rs1
+    ID_P_BLEZ = 113 # rs2
+    ID_P_BGTZ = 114 # rs2
 
     # jump type (pc + UJ_imm <UJ_imm>)
 
-    ID_P_J:   'j',
-    ID_P_JAL: 'jal',
+    ID_P_J   = 115
+    ID_P_JAL = 116
 
     # jump register type (immx(rs1))
 
-    ID_P_JR:   'jr',
-    ID_P_JALR: 'jalr'
-}
+    ID_P_JR   = 117 # I_imm or 0
+    ID_P_JALR = 118 # I_imm or 0
+
+    RISC_V_MNEMONICS = {
+        ID_UNKNOWN: "unknown RISC-V instruction",
+
+        ID_ECALL: 'ecall',
+
+        # R-type
+
+        ID_ADD:  'add',
+        ID_SUB:  'sub',
+        ID_SLL:  'sll',
+        ID_SLT:  'slt',
+        ID_SLTU: 'sltu',
+        ID_XOR:  'xor',
+        ID_SRL:  'srl',
+        ID_SRA:  'sra',
+        ID_OR:   'or',
+        ID_AND:  'and',
+
+        ID_ADDW: 'addw',
+        ID_SUBW: 'subw',
+        ID_SLLW: 'sllw',
+        ID_SRLW: 'srlw',
+        ID_SRAW: 'sraw',
+
+        ID_MUL:    'mul',
+        ID_MULH:   'mulh',
+        ID_MULHSU: 'mulhsu',
+        ID_MULHU:  'mulhu',
+        ID_DIV:    'div',
+        ID_DIVU:   'divu',
+        ID_REM:    'rem',
+        ID_REMU:   'remu',
+
+        ID_MULW:  'mulw',
+        ID_DIVW:  'divw',
+        ID_DIVUW: 'divuw',
+        ID_REMW:  'remw',
+        ID_REMUW: 'remuw',
+
+        # I-type
+
+        ID_JALR: 'jalr',
+
+        ID_LB:  'lb',
+        ID_LH:  'lh',
+        ID_LW:  'lw',
+        ID_LBU: 'lbu',
+        ID_LHU: 'lhu',
+        ID_LWU: 'lwu',
+        ID_LD:  'ld',
+
+        ID_ADDI:  'addi',
+        ID_SLTI:  'slti',
+        ID_SLTIU: 'sltiu',
+        ID_XORI:  'xori',
+        ID_ORI:   'ori',
+        ID_ANDI:  'andi',
+
+        ID_ADDIW: 'addiw',
+
+        ID_SLLI: 'slli',
+        ID_SRLI: 'srli',
+        ID_SRAI: 'srai',
+
+        ID_SLLIW: 'slliw',
+        ID_SRLIW: 'srliw',
+        ID_SRAIW: 'sraiw',
+
+        # S-type
+
+        ID_SB: 'sb',
+        ID_SH: 'sh',
+        ID_SW: 'sw',
+        ID_SD: 'sd',
+
+        # SB-type
+
+        ID_BEQ:  'beq',
+        ID_BNE:  'bne',
+        ID_BLT:  'blt',
+        ID_BGE:  'bge',
+        ID_BLTU: 'bltu',
+        ID_BGEU: 'bgeu',
+
+        # U-type
+
+        ID_LUI:   'lui',
+        ID_AUIPC: 'auipc',
+
+        # UJ-type
+
+        ID_JAL: 'jal',
+
+        # compressed instruction IDs
+
+        # CR-type
+
+        ID_C_MV:  'c.mv',
+        ID_C_ADD: 'c.add',
+
+        ID_C_JR:   'c.jr',
+        ID_C_JALR: 'c.jalr',
+
+        # CI-type
+
+        ID_C_LI:  'c.li',
+        ID_C_LUI: 'c.lui',
+
+        ID_C_ADDI:     'c.addi',
+        ID_C_ADDIW:    'c.addiw',
+        ID_C_ADDI16SP: 'c.addi16sp',
+
+        # CIW-type
+
+        ID_C_ADDI4SPN: 'c.addi4spn',
+
+        # CI-type
+
+        ID_C_SLLI: 'c.slli',
+
+        ID_C_LWSP: 'c.lwsp',
+        ID_C_LDSP: 'c.ldsp',
+
+        # CL-type
+
+        ID_C_LW: 'c.lw',
+        ID_C_LD: 'c.ld',
+
+        # CS-type
+
+        ID_C_SW: 'c.sw',
+        ID_C_SD: 'c.sd',
+
+        ID_C_SUB: 'c.sub',
+        ID_C_XOR: 'c.xor',
+        ID_C_OR:  'c.or',
+        ID_C_AND: 'c.and',
+
+        ID_C_ADDW: 'c.addw',
+        ID_C_SUBW: 'c.subw',
+
+        # CSS-type
+
+        ID_C_SWSP: 'c.swsp',
+        ID_C_SDSP: 'c.sdsp',
+
+        # CB-type
+
+        ID_C_BEQZ: 'c.beqz',
+        ID_C_BNEZ: 'c.bnez',
+
+        ID_C_ANDI: 'c.andi',
+
+        ID_C_SRLI: 'c.srli',
+        ID_C_SRAI: 'c.srai',
+
+        # CJ-type
+
+        ID_C_J:   'c.j',
+        ID_C_JAL: 'c.jal',
+
+        # pseudoinstruction IDs
+
+        # No operands
+
+        ID_P_NOP: 'nop',
+        ID_P_RET: 'ret',
+
+        # rd,I_imm
+
+        ID_P_LI: 'li',
+
+        # rd,rsx
+
+        ID_P_MV:     'mv',
+        ID_P_NOT:    'not',
+        ID_P_SEXT_W: 'sext.w',
+        ID_P_SEQZ:   'seqz',
+        ID_P_SLTZ:   'sltz',
+        ID_P_ZEXT_B: 'zext.b',
+        ID_P_NEG:    'neg',
+        ID_P_NEGW:   'negw',
+        ID_P_SNEZ:   'snez',
+        ID_P_SGTZ:   'sgtz',
+
+        # branch type (rsx,pc+SB_imm <SB_imm>)
+
+        ID_P_BEQZ: 'beqz',
+        ID_P_BNEZ: 'bnez',
+        ID_P_BGEZ: 'bgez',
+        ID_P_BLTZ: 'bltz',
+        ID_P_BLEZ: 'blez',
+        ID_P_BGTZ: 'bgtz',
+
+        # jump type (pc + UJ_imm <UJ_imm>)
+
+        ID_P_J:   'j',
+        ID_P_JAL: 'jal',
+
+        # jump register type (immx(rs1))
+
+        ID_P_JR:   'jr',
+        ID_P_JALR: 'jalr'
+    }
+
+# instructions
 
 def init_instruction_sorts():
     global SID_INSTRUCTION_WORD
@@ -3162,6 +3435,9 @@ def init_instruction_sorts():
     global NID_DIVUW
     global NID_REMW
     global NID_REMUW
+
+    init_instruction_codes()
+    init_instruction_IDs()
 
     SID_INSTRUCTION_WORD = SID_SINGLE_WORD;
 
@@ -3470,6 +3746,8 @@ def init_instruction_sorts():
         NID_REMW  = NID_DISABLED
         NID_REMUW = NID_DISABLED
 
+# compressed instructions
+
 def init_compressed_instruction_sorts():
     global SID_OPCODE_C
 
@@ -3592,6 +3870,8 @@ def init_compressed_instruction_sorts():
 
     global NID_C_JR
     global NID_C_JALR
+
+    init_compressed_instruction_codes()
 
     # RVC codes
 
@@ -3794,7 +4074,7 @@ def init_compressed_instruction_sorts():
 
 class Bitvector_State():
     def __init__(self, core, sid, name, initials):
-        assert isinstance(sid, Bitvector)
+        assert isinstance(sid, Bitvector), f"got {sid} but expected bitvector"
         self.sid = sid
         if core >= 0:
             self.initial = new_constant(OP_CONSTD, self.sid, 0, f"initial core-{core} {name} value")
@@ -3808,18 +4088,16 @@ class Bitvector_State():
         return f"{self.state}"
 
 class Array_State():
-    def __init__(self, core, address_sid, element_sid, name, initials):
-        assert isinstance(address_sid, Bitvector) and isinstance(element_sid, Bitvector)
-        self.address_sid = address_sid
-        self.element_sid = element_sid
-        self.array_sid = new_array(address_sid, element_sid, f"{address_sid.size}-bit {name} array")
+    def __init__(self, core, array_sid, name, initials):
+        assert isinstance(array_sid, Array), f"got {array_sid} but expected array"
+        self.array_sid = array_sid
         if core >= 0:
-            self.initial = new_constant(OP_CONSTD, element_sid, 0, f"initial core-{core} {name} value")
-            self.state = new_input(OP_STATE, self.array_sid, f"core-{core}-{initials}", f"{address_sid.size}-bit {name} of {element_sid.size}-bit bitvectors")
+            self.initial = new_constant(OP_CONSTD, array_sid.element_size_line, 0, f"initial core-{core} {name} value")
+            self.state = new_input(OP_STATE, array_sid, f"core-{core}-{initials}", f"{array_sid.array_size_line.size}-bit {name} of {array_sid.element_size_line.size}-bit bitvectors")
         else:
-            self.initial = new_constant(OP_CONSTD, element_sid, 0, f"initial {name} value")
-            self.state = new_input(OP_STATE, self.array_sid, f"{initials}", f"{address_sid.size}-bit {name} of {element_sid.size}-bit bitvectors")
-        self.init = new_init(self.array_sid, self.state, self.initial, f"initializing {name}")
+            self.initial = new_constant(OP_CONSTD, array_sid.element_size_line, 0, f"initial {name} value")
+            self.state = new_input(OP_STATE, array_sid, f"{initials}", f"{array_sid.array_size_line.size}-bit {name} of {array_sid.element_size_line.size}-bit bitvectors")
+        self.init = new_init(array_sid, self.state, self.initial, f"initializing {name}")
 
     def __str__(self):
         return f"{self.state}"
@@ -3830,29 +4108,33 @@ class PC(Bitvector_State):
 
 class Registers(Array_State):
     def __init__(self, core):
-        super().__init__(core, SID_REGISTER_ADDRESS, SID_MACHINE_WORD, "register file", 'register-file')
+        super().__init__(core, SID_REGISTER_STATE, "register file", 'register-file')
 
 class Segment(Array_State):
-    def __init__(self, core, address_sid, word_sid, name, initials):
-        super().__init__(core, address_sid, word_sid, name, initials)
+    def __init__(self, core, array_sid, start_nid, end_nid, name, initials):
+        assert isinstance(array_sid, Array) and isinstance(start_nid, Constant) and isinstance(end_nid, Constant)
+        super().__init__(core, array_sid, name, initials)
+        self.start_nid = start_nid
+        self.end_nid = end_nid
 
 class Memory():
-    def __init__(self, core, memory_bits):
-        self.SID_VIRTUAL_ADDRESS = new_bitvec(memory_bits, "virtual address")
-        self.code = Segment(core, self.SID_VIRTUAL_ADDRESS, SID_MACHINE_WORD, "code segment", 'code-segment')
-        self.data = Segment(core, self.SID_VIRTUAL_ADDRESS, SID_MACHINE_WORD, "data segment", 'data-segment')
-        self.heap = Segment(core, self.SID_VIRTUAL_ADDRESS, SID_MACHINE_WORD, "heap segment", 'heap-segment')
-        self.stack = Segment(core, self.SID_VIRTUAL_ADDRESS, SID_MACHINE_WORD, "stack segment", 'stack-segment')
+    def __init__(self, core):
+        self.vaddr_sort_nid = SID_VIRTUAL_ADDRESS
+        self.code = Segment(core, SID_CODE_STATE, NID_CODE_START, NID_CODE_END, "code segment", 'code-segment')
+        self.data = Segment(core, SID_DATA_STATE, NID_DATA_START, NID_DATA_END, "data segment", 'data-segment')
+        self.heap = Segment(core, SID_HEAP_STATE, NID_HEAP_START, NID_HEAP_END, "heap segment", 'heap-segment')
+        self.stack = Segment(core, SID_STACK_STATE, NID_STACK_START, NID_STACK_END, "stack segment", 'stack-segment')
 
     def __str__(self):
-        return f"{self.SID_VIRTUAL_ADDRESS.size}-bit virtual memory:\n{self.code}\n{self.data}\n{self.heap}\n{self.stack}"
+        return f"{self.vaddr_sort_nid.size}-bit virtual memory:\n{self.code}\n{self.data}\n{self.heap}\n{self.stack}"
 
 class Kernel():
     def __init__(self, core, memory):
+        assert isinstance(memory, Memory), f"got {memory} but expected memory"
         self.memory = memory
-        self.program_break = Bitvector_State(-1, memory.SID_VIRTUAL_ADDRESS, "program break", 'program-break')
+        self.program_break = Bitvector_State(-1, memory.vaddr_sort_nid, "program break", 'program-break')
         self.file_descriptor = Bitvector_State(-1, SID_MACHINE_WORD, "file descriptor", 'file-descriptor')
-        self.input_buffer = Array_State(-1, SID_INPUT_ADDRESS, SID_BYTE, "input buffer", 'input-buffer')
+        self.input_buffer = Array_State(-1, SID_INPUT_BUFFER, "input buffer", 'input-buffer')
         self.readable_bytes = Bitvector_State(core, SID_MACHINE_WORD, "readable bytes", 'readable-bytes')
         self.read_bytes = Bitvector_State(core, SID_MACHINE_WORD, "read bytes", 'read-bytes')
 
@@ -3860,11 +4142,11 @@ class Kernel():
         return f"kernel:\n{self.program_break}\n{self.file_descriptor}\n{self.input_buffer}\n{self.readable_bytes}\n{self.read_bytes}"
 
 class Core():
-    cores = dict()
+    cores = {}
 
-    def __init__(self, machine_bits, memory_bits):
+    def __init__(self):
         self.core = len(Core.cores)
-        self.memory = Memory(self.core, memory_bits)
+        self.memory = Memory(self.core)
         self.kernel = Kernel(self.core, self.memory)
         self.pc = PC(self.core)
         self.regs = Registers(self.core)
@@ -3874,12 +4156,12 @@ class Core():
         return f"{self.kernel}\n{self.memory}\ncore-{self.core}:\n{self.pc}\n{self.regs}"
 
     def new_core(self):
-        assert self not in Core.cores
+        assert self.core not in Core.cores, f"{self.core} already defined"
         Core.cores[self.core] = self
 
 class System():
-    def __init__(self, machine_bits, memory_bits):
-        self.core = Core(machine_bits, memory_bits) # single core for now
+    def __init__(self):
+        self.core = Core() # single core for now
 
     def __str__(self):
         return f"{SID_MACHINE_WORD.size}-bit single-core system:\n{self.core}"
@@ -3912,8 +4194,11 @@ def get_decimal(tokens, expected, line_no):
     else:
         raise syntax_error(expected, line_no)
 
+def get_nid(tokens, expected, line_no):
+    return Array.accommodate_array_indexes(get_decimal(tokens, expected, line_no))
+
 def get_nid_line(tokens, clss, expected, line_no):
-    nid = get_decimal(tokens, expected, line_no)
+    nid = get_nid(tokens, expected, line_no)
     if Line.is_defined(nid):
         line = Line.get(nid)
         if isinstance(line, clss):
@@ -4057,6 +4342,8 @@ def parse_property_line(tokens, nid, op, line_no):
     return new_property(op, property_line, symbol, comment, nid, line_no)
 
 def parse_btor2_line(line, line_no):
+    global current_nid # only necessary for mapping arrays
+
     current_nid = 0
 
     if line.strip():
@@ -4067,6 +4354,7 @@ def parse_btor2_line(line, line_no):
                 nid = int(token)
                 if nid > current_nid:
                     current_nid = nid
+                    nid = Array.accommodate_array_indexes(nid)
                     token = get_token(tokens, "keyword", line_no)
                     if token == Sort.keyword:
                         return parse_sort_line(tokens, nid, line_no)
@@ -4096,20 +4384,99 @@ def parse_btor2_line(line, line_no):
             raise syntax_error("nid", line_no)
     return line.strip()
 
-def parse_btor2(modelfile):
+def parse_btor2(modelfile, outputfile):
+    lines = {}
     line_no = 1
     for line in modelfile:
         try:
-            parse_btor2_line(line, line_no)
+            lines[line_no] = parse_btor2_line(line, line_no)
             line_no += 1
         except Exception as message:
-            print(message)
+            print(f"exception during parsing: {message}")
             exit(1)
 
+    # start: mapping arrays to bitvectors
+
+    if Array.ARRAY_SIZE_BOUND > 0:
+        for init in Init.inits.values():
+            init.set_mapped_array_expression()
+        for constraint in Constraint.constraints.values():
+            constraint.set_mapped_array_expression()
+        for bad in Bad.bads.values():
+            bad.set_mapped_array_expression()
+        for next_line in Next.nexts.values():
+            next_line.set_mapped_array_expression()
+
+        for state in list(State.states.values()):
+            if isinstance(state.sid_line, Bitvector):
+                if state.init_line is not None and state.next_line is not None:
+                    if state.init_line.exp_line is state.next_line.exp_line or state.next_line.exp_line is state:
+                        # remove initialized read-only bitvector states
+                        state.remove_state()
+                        Transitional.remove_transition(state, Init.inits)
+                        Transitional.remove_transition(state, Next.nexts)
+
+        if Ite.branching_conditions and Ite.non_branching_conditions:
+            Ite.branching_conditions.get_mapped_array_expression_for(None)
+            Ite.non_branching_conditions.get_mapped_array_expression_for(None)
+
+    # end: mapping arrays to bitvectors
+
+    if outputfile:
+        for line in lines.values():
+            print(line, file=outputfile)
+
     for state in State.states.values():
-        if state.init_line == state:
+        if state.init_line is None:
             # state has no init
-            state.new_input()
+            state.new_input(state.index)
+
+    are_there_uninitialized_states = False
+    are_there_untransitioned_states = False
+    are_there_state_transitions = False
+
+    for state in State.states.values():
+        if state.init_line is None:
+            are_there_uninitialized_states = True
+        if state.next_line is None:
+            are_there_untransitioned_states = True
+        else:
+            are_there_state_transitions = True
+
+    print("#" * 80)
+
+    if are_there_state_transitions:
+        print("sequential problem:")
+    else:
+        print("combinational problem:")
+
+    for input_line in Input.inputs.values():
+        if isinstance(input_line, Input):
+            print(input_line)
+    for state in State.states.values():
+        print(state)
+
+    if are_there_uninitialized_states:
+        print("uninitialized states:")
+        for state in State.states.values():
+            if state.init_line is None:
+                print(state)
+    if are_there_untransitioned_states:
+        print("untransitioned states:")
+        for state in State.states.values():
+            if state.next_line is None:
+                print(state)
+
+    print("model profile:")
+    print(f"{len(Line.lines)} lines in total")
+    print(f"{Input.count} input, {State.count} state, {Init.count} init, {Next.count} next, {Constraint.count} constraint, {Bad.count} bad")
+    print(f"{Bool.count} bool, {Bitvec.count} bitvec, {Array.count} array")
+    print(f"{Zero.count} zero, {One.count} one, {Constd.count} constd, {Const.count} const, {Consth.count} consth")
+    print(f"{Ext.count} ext, {Slice.count} slice, {Unary.count} unary")
+    print(f"{Implies.count} implies, {Comparison.count} comparison, {Logical.count} logical, {Computation.count} computation")
+    print(f"{Concat.count} concat, {Ite.count} ite, {Read.count} read, {Write.count} write")
+
+    return are_there_state_transitions
 
 # Z3 and bitwuzla solver interface
 
@@ -4127,11 +4494,13 @@ class Z3_Solver(Solver):
     def __init__(self):
         super().__init__(z3.Solver())
 
-    def assert_this(self, assertion, step):
-        self.solver.add(assertion.get_z3_step(step))
+    def assert_this(self, assertions, step):
+        for assertion in assertions:
+            self.solver.add(assertion.get_z3_step(step))
 
-    def assert_not_this(self, assertion, step):
-        self.solver.add(assertion.get_z3_step(step) == False)
+    def assert_not_this(self, assertions, step):
+        for assertion in assertions:
+            self.solver.add(assertion.get_z3_step(step) == False)
 
     def prove(self):
         return self.solver.check()
@@ -4145,8 +4514,8 @@ class Z3_Solver(Solver):
     def assert_change(self, next_line, step):
         return self.solver.add(next_line.get_z3_change(step))
 
-    def take_next_step(self, state):
-        state.take_z3_step()
+    def assert_no_change(self, next_line, step):
+        return self.solver.add(next_line.get_z3_no_change(step))
 
     def print_pc(self, pc, step):
         self.prove()
@@ -4173,11 +4542,13 @@ class Bitwuzla_Solver(Solver):
         self.options.set(bitwuzla.Option.PRODUCE_MODELS, True)
         super().__init__(bitwuzla.Bitwuzla(self.tm, self.options))
 
-    def assert_this(self, assertion, step):
-        self.solver.assert_formula(assertion.get_bitwuzla_step(step, self.tm))
+    def assert_this(self, assertions, step):
+        for assertion in assertions:
+            self.solver.assert_formula(assertion.get_bitwuzla_step(step, self.tm))
 
-    def assert_not_this(self, assertion, step):
-        self.solver.assert_formula(self.tm.mk_term(bitwuzla.Kind.NOT, [assertion.get_bitwuzla_step(step, self.tm)]))
+    def assert_not_this(self, assertions, step):
+        for assertion in assertions:
+            self.solver.assert_formula(self.tm.mk_term(bitwuzla.Kind.NOT, [assertion.get_bitwuzla_step(step, self.tm)]))
 
     def prove(self):
         return self.solver.check_sat()
@@ -4191,8 +4562,8 @@ class Bitwuzla_Solver(Solver):
     def assert_change(self, next_line, step):
         return self.solver.assert_formula(next_line.get_bitwuzla_change(step, self.tm))
 
-    def take_next_step(self, state):
-        state.take_bitwuzla_step(self.tm)
+    def assert_no_change(self, next_line, step):
+        return self.solver.assert_formula(next_line.get_bitwuzla_no_change(step, self.tm))
 
     def print_pc(self, pc, step):
         self.prove()
@@ -4209,31 +4580,27 @@ class Bitwuzla_Solver(Solver):
 
 # bitme bounded model checker
 
-def bmc(solver, kmin, kmax, args):
-    for init in Init.inits.values():
-        # initialize all states
-        solver.assert_this(init, 0)
-
-    step = 0
-
+def branching_bmc(solver, kmin, kmax, args, step, level):
     while step <= kmax:
         # check model up to kmax steps
-        print(step)
+        if level == 0:
+            print(step)
+        else:
+            print(f"{step}-{level}")
 
         if args.print_pc and State.pc:
             # print current program counter value of single-core rotor model
             solver.print_pc(State.pc, step)
 
-        for constraint in Constraint.constraints.values():
-            # assert all constraints
-            solver.assert_this(constraint, step)
+        # assert all constraints
+        solver.assert_this(Constraint.constraints.values(), step)
 
         if step >= kmin:
             # check bad properties from kmin on
             for bad in Bad.bads.values():
                 # check all bad properties
                 solver.push()
-                solver.assert_this(bad, step)
+                solver.assert_this([bad], step)
                 result = solver.prove()
                 if solver.is_SAT(result):
                     print("v" * 80)
@@ -4242,18 +4609,14 @@ def bmc(solver, kmin, kmax, args):
                     print("^" * 80)
                 solver.pop()
 
-        for bad in Bad.bads.values():
+        if not args.unconstraining_bad:
             # assert all bad properties as negated constraints
-            solver.assert_not_this(bad, step)
-
-        for next_line in Next.nexts.values():
-            # compute next step
-            solver.assert_this(next_line, step)
+            solver.assert_not_this(Bad.bads.values(), step)
 
         if args.check_termination and step >= kmin:
             state_change = False
             for next_line in Next.nexts.values():
-                # check if any of the states changes
+                # check if state changes
                 solver.push()
                 solver.assert_change(next_line, step)
                 result = solver.prove()
@@ -4261,16 +4624,69 @@ def bmc(solver, kmin, kmax, args):
                 if solver.is_SAT(result):
                     state_change = True
                     print(f"state change: {next_line}")
-                    # break for efficiency
+                    # compute next step
+                    solver.assert_this([next_line], step)
+                else:
+                    solver.assert_no_change(next_line, step)
                 if not state_change and next_line == list(Next.nexts.values())[-1]:
                     print("no states changed: terminating")
                     return
+        else:
+            # compute next step
+            solver.assert_this(Next.nexts.values(), step)
 
-        for state in State.states.values():
-            # take next step
-            solver.take_next_step(state)
+        if args.branching and Ite.branching_conditions and Ite.non_branching_conditions:
+            solver.push()
+            solver.assert_this([Ite.branching_conditions], step)
+            branching_result = solver.is_SAT(solver.prove())
+            solver.pop()
+
+            solver.push()
+            solver.assert_not_this([Ite.non_branching_conditions], step)
+            non_branching_result = solver.is_SAT(solver.prove())
+            solver.pop()
+
+            if branching_result != non_branching_result:
+                if branching_result:
+                    solver.assert_this([Ite.branching_conditions], step)
+                elif non_branching_result:
+                    solver.assert_not_this([Ite.non_branching_conditions], step)
+
+            if branching_result and non_branching_result:
+                print("v" * 80)
+                print(f"branching @ {step}-{level}")
+
+                solver.push()
+                solver.assert_this([Ite.branching_conditions], step)
+
+                branching_bmc(solver, kmin, kmax, args, step + 1, level + 1)
+
+                solver.pop()
+
+                print("-" * 80)
+                print(f"not branching @ {step}-{level}")
+
+                solver.push()
+                solver.assert_not_this([Ite.non_branching_conditions], step)
+
+                branching_bmc(solver, kmin, kmax, args, step + 1, level + 1)
+
+                solver.pop()
+
+                print("^" * 80)
+                return
 
         step += 1
+
+def bmc(solver, kmin, kmax, args):
+    print("#" * 80)
+
+    print(f"bounded model checking: -kmin {kmin} -kmax {kmax}")
+
+    # initialize all states
+    solver.assert_this(Init.inits.values(), 0)
+
+    return branching_bmc(solver, kmin, kmax, args, 0, 0)
 
 # rotor model generator
 
@@ -4331,9 +4747,9 @@ def rotor_model():
         init_instruction_sorts()
         init_compressed_instruction_sorts()
 
-        print(System(32, 16))
+        print(System())
     except Exception as message:
-        print(message)
+        print(f"exception during modeling: {message}")
         exit(1)
 
 import sys
@@ -4352,10 +4768,14 @@ def main():
     try_rotor()
 
     parser = argparse.ArgumentParser(prog='bitme',
-        description="What the program does",
-        epilog="Text at the bottom of help")
+        description="bitme is a bounded model checker for BTOR2 models, see github.com/cksystemsteaching/selfie for more details.",
+        epilog="bitme is designed to work with BTOR2 models generated by rotor for modeling RISC-V machines and RISC-V code.")
 
-    parser.add_argument('modelfile')
+    parser.add_argument('modelfile', type=argparse.FileType('r'))
+    parser.add_argument('outputfile', nargs='?', type=argparse.FileType('w', encoding='UTF-8'))
+
+    parser.add_argument('-array', nargs=1, type=int)
+    parser.add_argument('--recursive-array', action='store_true')
 
     parser.add_argument('-kmin', nargs=1, type=int)
     parser.add_argument('-kmax', nargs=1, type=int)
@@ -4365,17 +4785,24 @@ def main():
 
     parser.add_argument('--print-pc', action='store_true')
     parser.add_argument('--check-termination', action='store_true')
+    parser.add_argument('--unconstraining-bad', action='store_true')
+    parser.add_argument('--branching', action='store_true')
 
     args = parser.parse_args()
 
-    with open(args.modelfile) as modelfile:
-        parse_btor2(modelfile)
+    Array.ARRAY_SIZE_BOUND = args.array[0] if args.array else 0
+    Read.READ_ARRAY_ITERATIVELY = not args.recursive_array
+
+    are_there_state_transitions = parse_btor2(args.modelfile, args.outputfile)
 
     if args.kmin or args.kmax:
         kmin = args.kmin[0] if args.kmin else 0
         kmax = args.kmax[0] if args.kmax else 0
 
-        kmax = max(kmin, kmax)
+        if are_there_state_transitions:
+            kmax = max(kmin, kmax)
+        else:
+            kmin = kmax = 0
 
         if is_Z3_present and args.use_Z3:
             solver = Z3_Solver()
@@ -4384,6 +4811,8 @@ def main():
         if is_bitwuzla_present and args.use_bitwuzla:
             solver = Bitwuzla_Solver()
             bmc(solver, kmin, kmax, args)
+
+        print("#" * 80)
 
 if __name__ == '__main__':
     main()
